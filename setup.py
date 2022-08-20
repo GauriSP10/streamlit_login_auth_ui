@@ -1,12 +1,12 @@
 from setuptools import setup
-from setuptools import find_namespace_packages
+from setuptools import find_packages
 
 # Load the README file.
 # with open(file="README.md", mode="r") as readme_handle:
 #     long_description = readme_handle.read()
 
 setup(
-    name='streamlit_login_signup_ui',
+    name='streamlit_login_auth_ui',
 
     author='Gauri Prabhakar',
 
@@ -20,7 +20,7 @@ setup(
 
     long_description_content_type="text/markdown",
 
-    url='https://github.com/areed1192/uploading-python-packages',
+    url='https://github.com/GauriSP10/streamlit_login_signup_ui',
 
     install_requires=[
         'streamlit',
@@ -33,9 +33,7 @@ setup(
 
     keywords='streamlit, machine learning, login, sign-up, authentication, cookies',
 
-    packages=find_namespace_packages(
-        where=['streamlit_login_signup_ui', 'streamlit_login_signup_ui.*']
-    ),
+    packages=find_packages(),
 
 
     include_package_data=True,
@@ -44,9 +42,9 @@ setup(
 
     classifiers=[
 
-        'Intended Audience :: Developers',
-        'Intended Audience :: ML Engineers',
-        'Intended Audience :: Streamlit App Developers',
+        # 'Intended Audience :: Developers',
+        # 'Intended Audience :: ML Engineers',
+        # 'Intended Audience :: Streamlit App Developers',
 
         'License :: OSI Approved :: MIT License',
 
@@ -54,11 +52,11 @@ setup(
 
         'Operating System :: OS Independent',
 
-        'Programming Language :: Python :: 3.8.13',
+        # 'Programming Language :: Python :: 3.9.12',
 
-        'Topic :: Streamlit',
-        'Topic :: Authentication',
-        'Topic :: Login/Sign-Up'
+        # 'Topic :: Streamlit',
+        # 'Topic :: Authentication',
+        # 'Topic :: Login/Sign-Up'
 
     ]
 )

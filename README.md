@@ -6,7 +6,7 @@ It lets you connect your streamlit application to a pre-built and secure Login/ 
 
 You can customize specific parts of the page without any hassle!
 
-The library also sets encrypted cookies to remember and automatically authenticate the users without password.
+The library also sets encrypted cookies to remember and automatically authenticate the users without password. \
 The users can logout using the ```Logout``` button.
 
 

@@ -323,6 +323,6 @@ class __login__:
         return st.session_state['LOGGED_IN']
 
 # Author: Gauri Prabhakar
-# GitHub: https://github.com/GauriSP10/streamlit_login_signup_ui
+# GitHub: https://github.com/GauriSP10/streamlit_login_auth_ui
 
 

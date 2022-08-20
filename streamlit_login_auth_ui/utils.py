@@ -221,15 +221,3 @@ def check_current_passwd(email_reset_passwd: str, current_passwd: str) -> bool:
 
 # Author: Gauri Prabhakar
 # GitHub: https://github.com/GauriSP10/streamlit_login_auth_ui
-
-
-
-
-
-
-
-
-
-
-
-

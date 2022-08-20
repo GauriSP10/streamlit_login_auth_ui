@@ -10,6 +10,9 @@ You can customize specific parts of the page without any hassle!
 ## Authors
 - [@gauriprabhakar](https://github.com/GauriSP10)
 
+## PyPi
+https://pypi.org/project/streamlit-login-auth-ui/
+
 ## The UI:
 ![login_streamlit](https://user-images.githubusercontent.com/75731631/185765909-a70dd7af-240d-4a90-9140-45d6292e76f0.png)
  
@@ -75,19 +78,20 @@ Just make sure you call/ build your application indented under ```if st.session_
 The login page, authenticates the user.
 
 ### Create Account page
-Stores the user info in a secure way in the ```_secret_auth_.json``` file.
+Stores the user info in a secure way in the ```_secret_auth_.json``` file. \
 ![create_account_streamlit](https://user-images.githubusercontent.com/75731631/185765826-3bb5d2ca-c549-46ff-bf14-2cc42d295588.png)
 
 ### Forgot Password page
-After user authentication (email), triggers an email to the user containing a random password.
+After user authentication (email), triggers an email to the user containing a random password. \
 ![forgot_password_streamlit](https://user-images.githubusercontent.com/75731631/185765851-18db4775-b1f0-4cfe-86a7-93bda88227dd.png)
 
 ### Reset Password page
-After user authentication (email and the password shared over email), resets the password and updates the same in the ```_secret_auth_.json``` file.
+After user authentication (email and the password shared over email), resets the password and updates the same \
+in the ```_secret_auth_.json``` file. \
 ![reset_password_streamlit](https://user-images.githubusercontent.com/75731631/185765859-a0cf45b0-bfa4-489d-8060-001a9372843a.png)
 
 ### Logout button
-Generated in the sidebar only if the user is logged in, allows users to logout.
+Generated in the sidebar only if the user is logged in, allows users to logout. \
 ![logout_streamlit](https://user-images.githubusercontent.com/75731631/185765879-dbe17dda-93e3-4417-b5fc-5ce1d4dc8ecc.png)
 
 ## Version

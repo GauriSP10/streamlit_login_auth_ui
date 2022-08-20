@@ -6,6 +6,9 @@ It lets you connect your streamlit application to a pre-built and secure Login/ 
 
 You can customize specific parts of the page without any hassle!
 
+The library also sets encrypted cookies to remember auto authenticate the user without password.
+The user can logout using the ```Logout``` button.
+
 
 ## Authors
 - [@gauriprabhakar](https://github.com/GauriSP10)
@@ -46,10 +49,10 @@ All you need to do is create an object for the ```__login__``` class and pass th
 * height
 
 #### Non Mandatory Arguments:
-* logout_button_name
-* hide_menu_bool
-* hide_footer_bool
-* lottie_url
+* logout_button_name [default = 'Logout']
+* hide_menu_bool [default = False]
+* hide_footer_bool [default = False]
+* lottie_url [default = https://assets8.lottiefiles.com/packages/lf20_ktwnwv5m.json]
 
 # Example:
 ```python

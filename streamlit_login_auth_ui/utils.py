@@ -220,7 +220,7 @@ def check_current_passwd(email_reset_passwd: str, current_passwd: str) -> bool:
     return False
 
 # Author: Gauri Prabhakar
-# GitHub: https://github.com/GauriSP10/streamlit_login_signup_ui
+# GitHub: https://github.com/GauriSP10/streamlit_login_auth_ui
 
 
 

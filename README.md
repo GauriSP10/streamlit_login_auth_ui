@@ -56,6 +56,8 @@ All you need to do is create an object for the ```__login__``` class and pass th
 * ```hide_footer_bool```       [default = False]
 * ```lottie_url```             [default = https://assets8.lottiefiles.com/packages/lf20_ktwnwv5m.json]
 
+After doing that, just call the ```build_login_ui()``` function using the object you just created and store the return value in a variable.
+
 # Example:
 ```python
 import streamlit as st
@@ -98,6 +100,8 @@ in the ```_secret_auth_.json``` file. \
 ### Logout button
 Generated in the sidebar only if the user is logged in, allows users to logout. \
 ![logout_streamlit](https://user-images.githubusercontent.com/75731631/185765879-dbe17dda-93e3-4417-b5fc-5ce1d4dc8ecc.png)
+
+__Cookies are automatically created and destroyed depending on the user authentication status.__
 
 ## Version
 v0.2.0

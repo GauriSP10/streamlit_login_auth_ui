@@ -98,7 +98,7 @@ Generated in the sidebar only if the user is logged in, allows users to logout. 
 ![logout_streamlit](https://user-images.githubusercontent.com/75731631/185765879-dbe17dda-93e3-4417-b5fc-5ce1d4dc8ecc.png)
 
 ## Version
-v0.1.0
+v0.2.0
 
 ## License
 [MIT](https://github.com/GauriSP10/streamlit_login_auth_ui/blob/main/LICENSE)

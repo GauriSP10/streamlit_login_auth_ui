@@ -6,6 +6,8 @@ It lets you connect your streamlit application to a pre-built and secure Login/ 
 
 You can customize specific parts of the page without any hassle!
 
+The library grants users an option to reset their password, users can click on ```Forgot Password?``` after which an Email is triggered containing a temporary, randomly generated password.
+
 The library also sets encrypted cookies to remember and automatically authenticate the users without password. \
 The users can logout using the ```Logout``` button.
 

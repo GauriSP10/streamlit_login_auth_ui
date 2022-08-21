@@ -1,7 +1,5 @@
 
-# Streamlit Login/ Sign Up Library
-
-[![Downloads](https://pepy.tech/badge/streamlit-login-auth-ui)](https://pepy.tech/project/streamlit-login-auth-ui)
+# Streamlit Login/ Sign Up Library    [![Downloads](https://pepy.tech/badge/streamlit-login-auth-ui)](https://pepy.tech/project/streamlit-login-auth-ui)
 
 The streamlit_login_auth_ui library is meant for streamlit application developers.
 It lets you connect your streamlit application to a pre-built and secure Login/ Sign-Up page.

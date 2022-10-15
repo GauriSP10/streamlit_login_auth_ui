@@ -73,6 +73,13 @@ class __login__:
                 return True
         return False
 
+    def get_username(self):
+        if st.session_state['LOGOUT_BUTTON_HIT'] == False:
+            fetched_cookies = self.cookies
+            if '__streamlit_login_signup_ui_username__' in fetched_cookies.keys():
+                username=fetched_cookies['__streamlit_login_signup_ui_username__']
+                return username
+ 
 
     def login_widget(self) -> None:
         """

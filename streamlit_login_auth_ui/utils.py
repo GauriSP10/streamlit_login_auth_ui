@@ -10,13 +10,13 @@ ph = PasswordHasher()
 
 def check_usr_pass(username: str, password: str) -> bool:
     """
-    Authenticates the username and password.
+    Authenticates the username and password. The former is case insensitive.
     """
     with open("_secret_auth_.json", "r") as auth_json:
         authorized_user_data = json.load(auth_json)
 
     for registered_user in authorized_user_data:
-        if registered_user['username'] == username:
+        if registered_user['username'].lower() == username.lower():
             try:
                 passwd_verification_bool = ph.verify(registered_user['password'], password)
                 if passwd_verification_bool == True:
@@ -96,16 +96,17 @@ def non_empty_str_check(username_sign_up: str) -> bool:
 def check_unique_usr(username_sign_up: str):
     """
     Checks if the username already exists (since username needs to be unique),
-    also checks for non - empty username.
+    also checks for non - empty username. The username check is not case
+    sensitive meaning "smith" and "Smith" are the same.
     """
     authorized_user_data_master = list()
     with open("_secret_auth_.json", "r") as auth_json:
         authorized_users_data = json.load(auth_json)
 
         for user in authorized_users_data:
-            authorized_user_data_master.append(user['username'])
+            authorized_user_data_master.append(user['username'].lower())
 
-    if username_sign_up in authorized_user_data_master:
+    if username_sign_up.lower() in authorized_user_data_master:
         return False
     
     non_empty_check = non_empty_str_check(username_sign_up)

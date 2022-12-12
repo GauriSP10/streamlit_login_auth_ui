@@ -77,20 +77,11 @@ def check_unique_email(email_sign_up: str) -> bool:
     return True
 
 
-def non_empty_str_check(username_sign_up: str) -> bool:
+def is_empty(username_sign_up: str) -> bool:
     """
-    Checks for non-empty strings.
+    Checks if username is empty.
     """
-    empty_count = 0
-    for i in username_sign_up:
-        if i == ' ':
-            empty_count = empty_count + 1
-            if empty_count == len(username_sign_up):
-                return False
-
-    if not username_sign_up:
-        return False
-    return True
+    return len(username_sign_up) == username_sign_up.count(' ')
 
 
 def check_unique_usr(username_sign_up: str):
@@ -108,10 +99,8 @@ def check_unique_usr(username_sign_up: str):
 
     if username_sign_up.lower() in authorized_user_data_master:
         return False
-    
-    non_empty_check = non_empty_str_check(username_sign_up)
 
-    if non_empty_check == False:
+    if is_empty(username_sign_up):
         return None
     return True
 

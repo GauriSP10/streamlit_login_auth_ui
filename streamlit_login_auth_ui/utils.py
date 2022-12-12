@@ -84,14 +84,14 @@ def is_empty(username_sign_up: str) -> bool:
     return len(username_sign_up) == username_sign_up.count(' ')
 
 
-def check_unique_usr(username_sign_up: str):
+def check_unique_usr(username_sign_up: str, users_info: str = "_secret_auth_.json"):
     """
     Checks if the username already exists (since username needs to be unique),
     also checks for non - empty username. The username check is not case
     sensitive meaning "smith" and "Smith" are the same.
     """
     authorized_user_data_master = list()
-    with open("_secret_auth_.json", "r") as auth_json:
+    with open(users_info, "r") as auth_json:
         authorized_users_data = json.load(auth_json)
 
         for user in authorized_users_data:

@@ -35,4 +35,5 @@ venv.bak/
 
 # Project
 _secret_auth_.json
+secrets.toml
 

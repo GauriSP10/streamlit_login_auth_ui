@@ -49,3 +49,11 @@ def test_check_usr_pass_3(username='Will', password='door_5954', users_info='./t
     It returns False because Will username does not exist in users.json.    
     """
     assert not check_usr_pass(username, password, users_info)
+
+
+def test_check_usr_pass_4(username='smith', password='window_5954', users_info='./tests/users.json'):
+    """Checks if username and password is in the users.json.
+
+    It returns False because password window_5954 is incorrect for smith username.
+    """
+    assert not check_usr_pass(username, password, users_info)

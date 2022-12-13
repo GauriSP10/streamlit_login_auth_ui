@@ -8,21 +8,22 @@ import requests
 
 ph = PasswordHasher() 
 
-def check_usr_pass(username: str, password: str) -> bool:
+def check_usr_pass(username: str, password: str, users_info: str = "_secret_auth_.json") -> bool:
     """
     Authenticates the username and password. The former is case insensitive.
     """
-    with open("_secret_auth_.json", "r") as auth_json:
+    with open(users_info, "r") as auth_json:
         authorized_user_data = json.load(auth_json)
 
     for registered_user in authorized_user_data:
         if registered_user['username'].lower() == username.lower():
             try:
                 passwd_verification_bool = ph.verify(registered_user['password'], password)
-                if passwd_verification_bool == True:
-                    return True
             except:
                 pass
+            else:
+                if passwd_verification_bool:
+                    return True
     return False
 
 

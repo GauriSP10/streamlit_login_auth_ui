@@ -78,13 +78,6 @@ def check_unique_email(email_sign_up: str) -> bool:
     return True
 
 
-def is_empty(username_sign_up: str) -> bool:
-    """
-    Checks if username is empty.
-    """
-    return len(username_sign_up) == username_sign_up.count(' ')
-
-
 def check_valid_username(name_sign_up: str) -> str:
     """Checks if username is valid.
 
@@ -142,10 +135,17 @@ def check_valid_username(name_sign_up: str) -> str:
 
 
 def check_unique_usr(username_sign_up: str, users_info: str = "_secret_auth_.json"):
-    """
-    Checks if the username already exists (since username needs to be unique),
-    also checks for non - empty username. The username check is not case
-    sensitive meaning "smith" and "Smith" are the same.
+    """Checks if the username is in users file.
+
+    By default the users file is recorded in _secret_auth_.json. The username
+    check is case insensitive meaning "smith" and "Smith" are the same.
+
+    Args:
+        username_sign_up: The username to check in users file.
+        users_info: The file where all the users info are recorded.
+
+    Returns:
+        True if username is not in users file. False if username is already existing.
     """
     authorized_user_data_master = list()
     with open(users_info, "r") as auth_json:
@@ -156,9 +156,6 @@ def check_unique_usr(username_sign_up: str, users_info: str = "_secret_auth_.jso
 
     if username_sign_up.lower() in authorized_user_data_master:
         return False
-
-    if is_empty(username_sign_up):
-        return None
     return True
 
 

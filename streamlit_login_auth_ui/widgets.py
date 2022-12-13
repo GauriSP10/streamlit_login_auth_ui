@@ -167,10 +167,6 @@ class __login__:
                 elif valid_username_message != 'valid':
                     st.error(f"Username is invalid -> {valid_username_message}")
                     is_registration_ok = False
-                
-                elif unique_username_check is None:
-                    st.error('Please enter a non - empty Username!')
-                    is_registration_ok = False
 
                 elif not unique_username_check:
                     st.error(f'Sorry, username {username_sign_up} already exists!')

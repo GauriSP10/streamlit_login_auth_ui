@@ -120,6 +120,37 @@ class __login__:
                         st.experimental_rerun()
 
 
+    def delete_accnt_widget(self) -> None:
+        """Deletes user account.
+
+        Creates the delete account widget, authenticates the users with
+        username and password before deleting the user account from file.
+        """
+        with st.form("Delete Account Form", clear_on_submit=True):
+            username = st.text_input("Username", placeholder='Your unique username')
+            password = st.text_input("Password", placeholder='Your password', type='password')
+
+            st.markdown("###")
+            delete_submit_button = st.form_submit_button(label='Delete Account')
+
+            if delete_submit_button:
+                is_valid_user = check_usr_pass(username, password)
+
+                if not is_valid_user:
+                    st.error("Invalid Username or Password!")
+                else:
+                    with open("_secret_auth_.json", "r") as auth_json:
+                        authorized_user_data = json.load(auth_json)
+
+                    # Save users who are not to be deleted.
+                    updated_users = [user for user in authorized_user_data if user['username'] != username]
+
+                    with open("_secret_auth_.json", "w") as auth_json_write:
+                        json.dump(updated_users, auth_json_write)
+
+                    st.success("Account is successfully deleted!")
+
+
     def animation(self) -> None:
         """
         Renders the lottie animation.
@@ -261,8 +292,8 @@ class __login__:
             selected_option = option_menu(
                 menu_title = 'Navigation',
                 menu_icon = 'list-columns-reverse',
-                icons = ['box-arrow-in-right', 'person-plus', 'x-circle','arrow-counterclockwise'],
-                options = ['Login', 'Create Account', 'Forgot Password?', 'Reset Password'],
+                icons = ['box-arrow-in-right', 'person-plus', 'x-circle','arrow-counterclockwise', 'trash'],
+                options = ['Login', 'Create Account', 'Forgot Password?', 'Reset Password', 'Delete Account'],
                 styles = {
                     "container": {"padding": "5px"},
                     "nav-link": {"font-size": "14px", "text-align": "left", "margin":"0px"}} )
@@ -321,6 +352,13 @@ class __login__:
 
         if selected_option == 'Reset Password':
             self.reset_password()
+
+        if selected_option == 'Delete Account':
+            c1, c2 = st.columns([7,3])
+            with c1:
+                self.delete_accnt_widget()
+            with c2:
+                self.animation()
         
         self.logout_widget()
 

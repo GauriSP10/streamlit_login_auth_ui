@@ -24,7 +24,12 @@ class __login__:
     Builds the UI for the Login/ Sign Up page.
     """
 
-    def __init__(self, auth_token: str, company_name: str, width, height, logout_button_name: str = 'Logout', hide_menu_bool: bool = False, hide_footer_bool: bool = False, lottie_url: str = "https://assets8.lottiefiles.com/packages/lf20_ktwnwv5m.json" ):
+    def __init__(
+        self, auth_token: str, company_name: str, width, height,
+        logout_button_name: str = 'Logout', hide_menu_bool: bool = False,
+        hide_footer_bool: bool = False,
+        lottie_url: str = "https://assets8.lottiefiles.com/packages/lf20_ktwnwv5m.json",
+        users_auth_file='_secret_auth_.json'):
         """
         Arguments:
         -----------
@@ -37,6 +42,7 @@ class __login__:
         7. hide_menu_bool : Pass True if the streamlit menu should be hidden.
         8. hide_footer_bool : Pass True if the 'made with streamlit' footer should be hidden.
         9. lottie_url : The lottie animation you would like to use on the login page. Explore animations at - https://lottiefiles.com/featured
+        10. users_auth_file : The json file where registered users info are saved.
         """
         self.auth_token = auth_token
         self.company_name = company_name
@@ -46,16 +52,17 @@ class __login__:
         self.hide_menu_bool = hide_menu_bool
         self.hide_footer_bool = hide_footer_bool
         self.lottie_url = lottie_url
+        self.users_auth_file = users_auth_file
 
         self.cookies = EncryptedCookieManager(
-        prefix="streamlit_login_ui_yummy_cookies",
-        password='9d68d6f2-4258-45c9-96eb-2d6bc74ddbb5-d8f49cab-edbb-404a-94d0-b25b1d4a564b')
+            prefix="streamlit_login_ui_yummy_cookies",
+            password='9d68d6f2-4258-45c9-96eb-2d6bc74ddbb5-d8f49cab-edbb-404a-94d0-b25b1d4a564b')
 
         if not self.cookies.ready():
             st.stop()   
 
 
-    def check_auth_json_file_exists(self, auth_filename: str) -> bool:
+    def check_auth_json_file_exists(self) -> bool:
         """
         Checks if the auth file (where the user info is stored) already exists.
         """
@@ -66,7 +73,7 @@ class __login__:
 
         present_files = []
         for file_name in file_names:
-            if auth_filename in file_name:
+            if self.users_auth_file in file_name:
                 present_files.append(file_name)
                     
             present_files = sorted(present_files)
@@ -107,7 +114,7 @@ class __login__:
                 login_submit_button = st.form_submit_button(label = 'Login')
 
                 if login_submit_button == True:
-                    authenticate_user_check = check_usr_pass(username, password)
+                    authenticate_user_check = check_usr_pass(username, password, self.users_auth_file)
 
                     if authenticate_user_check == False:
                         st.error("Invalid Username or Password!")
@@ -134,18 +141,18 @@ class __login__:
             delete_submit_button = st.form_submit_button(label='Delete Account')
 
             if delete_submit_button:
-                is_valid_user = check_usr_pass(username, password)
+                is_valid_user = check_usr_pass(username, password, self.users_auth_file)
 
                 if not is_valid_user:
                     st.error("Invalid Username or Password!")
                 else:
-                    with open("_secret_auth_.json", "r") as auth_json:
+                    with open(self.users_auth_file, "r") as auth_json:
                         authorized_user_data = json.load(auth_json)
 
                     # Save users who are not to be deleted.
                     updated_users = [user for user in authorized_user_data if user['username'] != username]
 
-                    with open("_secret_auth_.json", "w") as auth_json_write:
+                    with open(self.users_auth_file, "w") as auth_json_write:
                         json.dump(updated_users, auth_json_write)
 
                     st.success("Account is successfully deleted!")
@@ -161,7 +168,7 @@ class __login__:
 
     def sign_up_widget(self) -> None:
         """
-        Creates the sign-up widget and stores the user info in a secure way in the _secret_auth_.json file.
+        Creates the sign-up widget and stores the user info in a secure way in the users_auth_file.
         """
         with st.form("Sign Up Form"):
             name_sign_up = st.text_input("Name *", placeholder='Please enter your name')
@@ -169,11 +176,11 @@ class __login__:
 
             email_sign_up = st.text_input("Email *", placeholder='Please enter your email')
             valid_email_check = check_valid_email(email_sign_up)
-            unique_email_check = check_unique_email(email_sign_up)
+            unique_email_check = check_unique_email(email_sign_up, self.users_auth_file)
             
             username_sign_up = st.text_input("Username *", placeholder='Enter a unique username')
             valid_username_message = check_valid_username(username_sign_up)
-            unique_username_check = check_unique_usr(username_sign_up)
+            unique_username_check = check_unique_usr(username_sign_up, self.users_auth_file)
 
             password_sign_up = st.text_input("Password *", placeholder='Create a strong password', type='password')
 
@@ -204,7 +211,7 @@ class __login__:
                     is_registration_ok = False
 
                 if is_registration_ok:
-                    register_new_usr(name_sign_up, email_sign_up, username_sign_up, password_sign_up)
+                    register_new_usr(name_sign_up, email_sign_up, username_sign_up, password_sign_up, self.users_auth_file)
                     st.success("Registration Successful!")
 
 
@@ -215,7 +222,7 @@ class __login__:
         """
         with st.form("Forgot Password Form"):
             email_forgot_passwd = st.text_input("Email", placeholder= 'Please enter your email')
-            email_exists_check, username_forgot_passwd = check_email_exists(email_forgot_passwd)
+            email_exists_check, username_forgot_passwd = check_email_exists(email_forgot_passwd, self.users_auth_file)
 
             st.markdown("###")
             forgot_passwd_submit_button = st.form_submit_button(label = 'Get Password')
@@ -227,28 +234,28 @@ class __login__:
                 if email_exists_check == True:
                     random_password = generate_random_passwd()
                     send_passwd_in_email(self.auth_token, username_forgot_passwd, email_forgot_passwd, self.company_name, random_password)
-                    change_passwd(email_forgot_passwd, random_password)
+                    change_passwd(email_forgot_passwd, random_password, self.users_auth_file)
                     st.success("Secure Password Sent Successfully!")
 
 
     def reset_password(self) -> None:
         """
         Creates the reset password widget and after user authentication (email and the password shared over that email), 
-        resets the password and updates the same in the _secret_auth_.json file.
+        resets the password and updates the same in the users auth file.
         """
         with st.form("Reset Password Form"):
-            email_reset_passwd = st.text_input("Email", placeholder= 'Please enter your email')
-            email_exists_check, username_reset_passwd = check_email_exists(email_reset_passwd)
+            email_reset_passwd = st.text_input("Email", placeholder='Please enter your email')
+            email_exists_check, username_reset_passwd = check_email_exists(email_reset_passwd, self.users_auth_file)
 
-            current_passwd = st.text_input("Temporary Password", placeholder= 'Please enter the password you received in the email')
-            current_passwd_check = check_current_passwd(email_reset_passwd, current_passwd)
+            current_passwd = st.text_input("Temporary Password", placeholder='Please enter the password you received in the email')
+            current_passwd_check = check_current_passwd(email_reset_passwd, current_passwd, self.users_auth_file)
 
-            new_passwd = st.text_input("New Password", placeholder= 'Please enter a new, strong password', type = 'password')
+            new_passwd = st.text_input("New Password", placeholder='Please enter a new, strong password', type='password')
 
-            new_passwd_1 = st.text_input("Re - Enter New Password", placeholder= 'Please re- enter the new password', type = 'password')
+            new_passwd_1 = st.text_input("Re - Enter New Password", placeholder='Please re- enter the new password', type='password')
 
             st.markdown("###")
-            reset_passwd_submit_button = st.form_submit_button(label = 'Reset Password')
+            reset_passwd_submit_button = st.form_submit_button(label='Reset Password')
 
             if reset_passwd_submit_button:
                 if email_exists_check == False:
@@ -262,7 +269,7 @@ class __login__:
             
                 if email_exists_check == True:
                     if current_passwd_check == True:
-                        change_passwd(email_reset_passwd, new_passwd)
+                        change_passwd(email_reset_passwd, new_passwd, self.users_auth_file)
                         st.success("Password Reset Successfully!")
                 
 
@@ -290,11 +297,11 @@ class __login__:
         main_page_sidebar = st.sidebar.empty()
         with main_page_sidebar:
             selected_option = option_menu(
-                menu_title = 'Navigation',
-                menu_icon = 'list-columns-reverse',
-                icons = ['box-arrow-in-right', 'person-plus', 'x-circle','arrow-counterclockwise', 'trash'],
-                options = ['Login', 'Create Account', 'Forgot Password?', 'Reset Password', 'Delete Account'],
-                styles = {
+                menu_title='Navigation',
+                menu_icon='list-columns-reverse',
+                icons=['box-arrow-in-right', 'person-plus', 'x-circle','arrow-counterclockwise', 'trash'],
+                options=['Login', 'Create Account', 'Forgot Password?', 'Reset Password', 'Delete Account'],
+                styles={
                     "container": {"padding": "5px"},
                     "nav-link": {"font-size": "14px", "text-align": "left", "margin":"0px"}} )
         return main_page_sidebar, selected_option
@@ -328,10 +335,10 @@ class __login__:
         if 'LOGOUT_BUTTON_HIT' not in st.session_state:
             st.session_state['LOGOUT_BUTTON_HIT'] = False
 
-        auth_json_exists_bool = self.check_auth_json_file_exists('_secret_auth_.json')
+        auth_json_exists_bool = self.check_auth_json_file_exists()
 
         if auth_json_exists_bool == False:
-            with open("_secret_auth_.json", "w") as auth_json:
+            with open(self.users_auth_file, "w") as auth_json:
                 json.dump([], auth_json)
 
         main_page_sidebar, selected_option = self.nav_sidebar()

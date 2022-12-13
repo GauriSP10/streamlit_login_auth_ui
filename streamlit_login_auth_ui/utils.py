@@ -6,13 +6,14 @@ from argon2 import PasswordHasher
 import requests
 
 
-ph = PasswordHasher() 
+ph = PasswordHasher()
 
-def check_usr_pass(username: str, password: str, users_info: str = "_secret_auth_.json") -> bool:
+
+def check_usr_pass(username: str, password: str, users_auth_file: str) -> bool:
     """
     Authenticates the username and password. The former is case insensitive.
     """
-    with open(users_info, "r") as auth_json:
+    with open(users_auth_file, "r") as auth_json:
         authorized_user_data = json.load(auth_json)
 
     for registered_user in authorized_user_data:
@@ -62,12 +63,12 @@ def check_valid_email(email_sign_up: str) -> bool:
     return False
 
 
-def check_unique_email(email_sign_up: str) -> bool:
+def check_unique_email(email_sign_up: str, users_auth_file) -> bool:
     """
     Checks if the email already exists (since email needs to be unique).
     """
     authorized_user_data_master = list()
-    with open("_secret_auth_.json", "r") as auth_json:
+    with open(users_auth_file, "r") as auth_json:
         authorized_users_data = json.load(auth_json)
 
         for user in authorized_users_data:
@@ -134,21 +135,21 @@ def check_valid_username(name_sign_up: str) -> str:
     return 'valid'
 
 
-def check_unique_usr(username_sign_up: str, users_info: str = "_secret_auth_.json"):
+def check_unique_usr(username_sign_up: str, users_auth_file: str):
     """Checks if the username is in users file.
 
-    By default the users file is recorded in _secret_auth_.json. The username
-    check is case insensitive meaning "smith" and "Smith" are the same.
+    The username check is case insensitive meaning "smith" and
+    "Smith" are the same.
 
     Args:
         username_sign_up: The username to check in users file.
-        users_info: The file where all the users info are recorded.
+        users_auth_file: The file where all the users info are recorded.
 
     Returns:
         True if username is not in users file. False if username is already existing.
     """
     authorized_user_data_master = list()
-    with open(users_info, "r") as auth_json:
+    with open(users_auth_file, "r") as auth_json:
         authorized_users_data = json.load(auth_json)
 
         for user in authorized_users_data:
@@ -159,46 +160,30 @@ def check_unique_usr(username_sign_up: str, users_info: str = "_secret_auth_.jso
     return True
 
 
-def register_new_usr(name_sign_up: str, email_sign_up: str, username_sign_up: str, password_sign_up: str) -> None:
+def register_new_usr(name_sign_up: str, email_sign_up: str, username_sign_up: str, password_sign_up: str, users_auth_file: str) -> None:
     """
-    Saves the information of the new user in the _secret_auth.json file.
+    Saves the information of the new user in the users_auth_file.
     """
     new_usr_data = {'username': username_sign_up, 'name': name_sign_up, 'email': email_sign_up, 'password': ph.hash(password_sign_up)}
 
-    with open("_secret_auth_.json", "r") as auth_json:
+    with open(users_auth_file, "r") as auth_json:
         authorized_user_data = json.load(auth_json)
 
-    with open("_secret_auth_.json", "w") as auth_json_write:
+    with open(users_auth_file, "w") as auth_json_write:
         authorized_user_data.append(new_usr_data)
         json.dump(authorized_user_data, auth_json_write)
-
-
-def check_username_exists(user_name: str) -> bool:
-    """
-    Checks if the username exists in the _secret_auth.json file.
-    """
-    authorized_user_data_master = list()
-    with open("_secret_auth_.json", "r") as auth_json:
-        authorized_users_data = json.load(auth_json)
-
-        for user in authorized_users_data:
-            authorized_user_data_master.append(user['username'])
-        
-    if user_name in authorized_user_data_master:
-        return True
-    return False
         
 
-def check_email_exists(email_forgot_passwd: str):
+def check_email_exists(email_forgot_passwd: str, users_auth_file: str):
     """
-    Checks if the email entered is present in the _secret_auth.json file.
+    Checks if the email entered is present in the users file.
     """
-    with open("_secret_auth_.json", "r") as auth_json:
+    with open(users_auth_file, "r") as auth_json:
         authorized_users_data = json.load(auth_json)
 
         for user in authorized_users_data:
             if user['email'] == email_forgot_passwd:
-                    return True, user['username']
+                return True, user['username']
     return False, None
 
 
@@ -232,26 +217,26 @@ def send_passwd_in_email(auth_token: str, username_forgot_passwd: str, email_for
     )
 
 
-def change_passwd(email_: str, random_password: str) -> None:
+def change_passwd(email_: str, random_password: str, users_auth_file: str) -> None:
     """
     Replaces the old password with the newly generated password.
     """
-    with open("_secret_auth_.json", "r") as auth_json:
+    with open(users_auth_file, "r") as auth_json:
         authorized_users_data = json.load(auth_json)
 
-    with open("_secret_auth_.json", "w") as auth_json_:
+    with open(users_auth_file, "w") as auth_json_:
         for user in authorized_users_data:
             if user['email'] == email_:
                 user['password'] = ph.hash(random_password)
         json.dump(authorized_users_data, auth_json_)
     
 
-def check_current_passwd(email_reset_passwd: str, current_passwd: str) -> bool:
+def check_current_passwd(email_reset_passwd: str, current_passwd: str, users_auth_file: str) -> bool:
     """
     Authenticates the password entered against the username when 
     resetting the password.
     """
-    with open("_secret_auth_.json", "r") as auth_json:
+    with open(users_auth_file, "r") as auth_json:
         authorized_users_data = json.load(auth_json)
 
         for user in authorized_users_data:

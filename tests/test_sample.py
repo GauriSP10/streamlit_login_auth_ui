@@ -1,4 +1,6 @@
-from streamlit_login_auth_ui.utils import check_unique_usr, check_usr_pass
+from streamlit_login_auth_ui.utils import check_unique_usr
+from streamlit_login_auth_ui.utils import check_usr_pass
+from streamlit_login_auth_ui.utils import check_valid_username
 
 
 def test_unique_username_1(username='smith', users_info='./tests/users.json'):
@@ -40,3 +42,76 @@ def test_check_usr_pass_4(username='smith', password='window_5954', users_info='
     It returns False because password window_5954 is incorrect for smith username.
     """
     assert not check_usr_pass(username, password, users_info)
+
+
+def test_check_valid_username_1(username: str = ' peace'):
+    """Checks if username is valid.
+
+    Args:
+        username: The username to check if valid.
+
+    Returns:
+        "leading white space"
+    """
+    assert check_valid_username(username) == "leading white space"
+
+
+def test_check_valid_username_2(username: str = 'peace '):
+    """Checks if username is valid.
+
+    Args:
+        username: The username to check if valid.
+
+    Returns:
+        "trailing white space"
+    """
+    assert check_valid_username(username) == "trailing white space"
+
+
+def test_check_valid_username_3(username: str = 'peace man'):
+    """Checks if username is valid.
+
+    Args:
+        username: The username to check if valid.
+
+    Returns:
+        "more than 1 word"
+    """
+    assert check_valid_username(username) == "more than 1 word"
+
+
+def test_check_valid_username_4(username: str = 'believe?'):
+    """Checks if username is valid.
+
+    Args:
+        username: The username to check if valid.
+
+    Returns:
+        "not alpha-numeric"
+    """
+    assert check_valid_username(username) == "not alpha-numeric"
+
+
+def test_check_valid_username_5(username: str = 'nia'):
+    """Checks if username is valid.
+
+    Args:
+        username: The username to check if valid.
+
+    Returns:
+        "number of characters is below 4"
+    """
+    assert check_valid_username(username) == "number of characters is below 4"
+
+
+def test_check_valid_username_6(username: str = 'dieseltoyotamobilemars'):
+    """Checks if username is valid.
+
+    Args:
+        username: The username to check if valid.
+
+    Returns:
+        "number of characters is above 16"
+    """
+    assert check_valid_username(username) == "number of characters is above 16"
+

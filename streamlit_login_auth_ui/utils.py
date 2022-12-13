@@ -85,6 +85,62 @@ def is_empty(username_sign_up: str) -> bool:
     return len(username_sign_up) == username_sign_up.count(' ')
 
 
+def check_valid_username(name_sign_up: str) -> str:
+    """Checks if username is valid.
+
+    1. usernames with leading and trailing whitespace are invalid.
+    The following usernames are invalid.
+    username = " smith"
+    username = "smith "
+    username = " smith "
+
+    2. usernames with more than 1 word are invalid.
+    The following usernames are invalid.
+    username = "joe smith"
+    username = "joe  smith"
+    username = "joe smith general"
+
+    3. usernames that contain a non-alphanumeric char are invalid.
+    The following username is invalid.
+    username = "4horsemen!"
+
+    4. minimum usernames length is 4
+    The following usernames are invalid.
+    username = "joe"
+    username = "bea"
+
+    5. maximum username length is 16
+    The following username is invalid.
+    username = "joeklDedfnkdfedfefdtw"
+
+    Args:
+        name_sign_up: username
+
+    Returns:
+        valid if username is valid otherwise a string about the issue.
+    """
+
+    if name_sign_up.startswith(' '):
+        return 'leading white space'
+
+    if name_sign_up.endswith(' '):
+        return 'trailing white space'
+
+    if name_sign_up.count(' ') >= 1:
+        return 'more than 1 word'
+
+    if not name_sign_up.isalnum():
+        return 'not alpha-numeric'
+
+    if len(name_sign_up) < 4:
+        return 'number of characters is below 4'
+
+    if len(name_sign_up) > 16:
+        return 'number of characters is above 16'
+
+    return 'valid'
+
+
 def check_unique_usr(username_sign_up: str, users_info: str = "_secret_auth_.json"):
     """
     Checks if the username already exists (since username needs to be unique),

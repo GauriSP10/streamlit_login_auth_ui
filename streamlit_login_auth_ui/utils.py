@@ -65,19 +65,21 @@ def check_valid_email(email_sign_up: str) -> bool:
     return False
 
 
-def check_unique_email(email_sign_up: str, users_auth_file: str) -> bool:
-    """
-    Checks if the email already exists (since email needs to be unique).
-    Email checking is case insensitive.
-    """
-    authorized_user_data_master = list()
-    with open(users_auth_file, "r") as auth_json:
-        authorized_users_data = json.load(auth_json)
+def check_unique_email(email: str, users_auth_file: str) -> bool:
+    """Checks if email is not in users auth file.
 
-    for user in authorized_users_data:
-        authorized_user_data_master.append(user['email'].lower())
+    Lookup in the users auth file if email is not there. Email checking
+    is case insensitive.
 
-    if email_sign_up.lower() in authorized_user_data_master:
+    Args:
+        email: The email to check in users auth file.
+        users_auth_file: The json file where users info are saved.
+
+    Returns:
+        True if not found in users auth file. False if it exists already.
+    """
+    is_existing, _ = check_email_exists(email, users_auth_file)
+    if is_existing:
         return False
     return True
 
@@ -182,7 +184,7 @@ def register_new_usr(name_sign_up: str, email_sign_up: str,
         json.dump(authorized_user_data, auth_json_write)
 
 
-def check_email_exists(email_forgot_passwd: str, users_auth_file: str):
+def check_email_exists(email: str, users_auth_file: str):
     """
     Checks if the email entered is present in the users auth file.
     Email checking is case insensitive.
@@ -191,7 +193,7 @@ def check_email_exists(email_forgot_passwd: str, users_auth_file: str):
         authorized_users_data = json.load(auth_json)
 
     for user in authorized_users_data:
-        if user['email'].lower() == email_forgot_passwd.lower():
+        if user['email'].lower() == email.lower():
             return True, user['username']
     return False, None
 

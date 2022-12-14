@@ -1,9 +1,11 @@
+from typing import Union
 import re
 import json
 from trycourier import Courier
 import secrets
 from argon2 import PasswordHasher
 import requests
+from trycourier.exceptions import CourierAPIException
 
 
 ph = PasswordHasher()
@@ -195,26 +197,40 @@ def generate_random_passwd() -> str:
     return secrets.token_urlsafe(password_length)
 
 
-def send_passwd_in_email(auth_token: str, username_forgot_passwd: str, email_forgot_passwd: str, company_name: str, random_password: str) -> None:
-    """
-    Triggers an email to the user containing the randomly generated password.
+def send_passwd_in_email(
+        auth_token: str,
+        username_forgot_passwd: str,
+        email_forgot_passwd: str,
+        company_name: str,
+        random_password: str) -> Union[str, CourierAPIException]:
+    """Sends email to the user.
+    
+    Triggers an email to the user containing the randomly generated
+    password. If the developer does not use courier auth token, the
+    email will not be sent. If the developer uses the courier auth token
+    and the email failed to be sent to the user, the developer will
+    receive a copy of that email.
     """
     client = Courier(auth_token = auth_token)
 
-    resp = client.send_message(
-    message={
-        "to": {
-        "email": email_forgot_passwd
-        },
-        "content": {
-        "title": company_name + ": Login Password!",
-        "body": "Hi! " + username_forgot_passwd + "," + "\n" + "\n" + "Your temporary login password is: " + random_password  + "\n" + "\n" + "{{info}}"
-        },
-        "data":{
-        "info": "Please reset your password at the earliest for security reasons."
-        }
-    }
-    )
+    try:
+        client.send_message(
+            message={
+                "to": {
+                "email": email_forgot_passwd
+                },
+                "content": {
+                "title": company_name + ": Login Password!",
+                "body": "Hi! " + username_forgot_passwd + "," + "\n" + "\n" + "Your temporary login password is: " + random_password  + "\n" + "\n" + "{{info}}"
+                },
+                "data":{
+                "info": "Please reset your password at the earliest for security reasons."
+                }
+            })
+    except CourierAPIException as err:
+        return err
+    else:
+        return 'OK'
 
 
 def change_passwd(email_: str, random_password: str, users_auth_file: str) -> None:

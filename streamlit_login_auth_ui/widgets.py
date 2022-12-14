@@ -233,9 +233,18 @@ class __login__:
 
                 if email_exists_check == True:
                     random_password = generate_random_passwd()
-                    send_passwd_in_email(self.auth_token, username_forgot_passwd, email_forgot_passwd, self.company_name, random_password)
-                    change_passwd(email_forgot_passwd, random_password, self.users_auth_file)
-                    st.success("Secure Password Sent Successfully!")
+
+                    res = send_passwd_in_email(
+                        self.auth_token,
+                        username_forgot_passwd,
+                        email_forgot_passwd,
+                        self.company_name,
+                        random_password)
+                    if res == 'OK':
+                        change_passwd(email_forgot_passwd, random_password, self.users_auth_file)
+                        st.success("Secure Password Sent Successfully!")
+                    else:
+                        st.error(f"Failed to send email!, {res.message}")
 
 
     def reset_password(self) -> None:

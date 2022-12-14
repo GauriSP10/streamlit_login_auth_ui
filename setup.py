@@ -29,6 +29,7 @@ setup(
         'streamlit_option_menu',
         'trycourier',
         'streamlit_cookies_manager',
+        'argon2-cffi'
     ],
 
     keywords='streamlit, machine learning, login, sign-up, authentication, cookies',

@@ -65,18 +65,19 @@ def check_valid_email(email_sign_up: str) -> bool:
     return False
 
 
-def check_unique_email(email_sign_up: str, users_auth_file) -> bool:
+def check_unique_email(email_sign_up: str, users_auth_file: str) -> bool:
     """
     Checks if the email already exists (since email needs to be unique).
+    Email checking is case insensitive.
     """
     authorized_user_data_master = list()
     with open(users_auth_file, "r") as auth_json:
         authorized_users_data = json.load(auth_json)
 
-        for user in authorized_users_data:
-            authorized_user_data_master.append(user['email'])
+    for user in authorized_users_data:
+        authorized_user_data_master.append(user['email'].lower())
 
-    if email_sign_up in authorized_user_data_master:
+    if email_sign_up.lower() in authorized_user_data_master:
         return False
     return True
 
@@ -183,14 +184,15 @@ def register_new_usr(name_sign_up: str, email_sign_up: str,
 
 def check_email_exists(email_forgot_passwd: str, users_auth_file: str):
     """
-    Checks if the email entered is present in the users file.
+    Checks if the email entered is present in the users auth file.
+    Email checking is case insensitive.
     """
     with open(users_auth_file, "r") as auth_json:
         authorized_users_data = json.load(auth_json)
 
-        for user in authorized_users_data:
-            if user['email'] == email_forgot_passwd:
-                return True, user['username']
+    for user in authorized_users_data:
+        if user['email'].lower() == email_forgot_passwd.lower():
+            return True, user['username']
     return False, None
 
 

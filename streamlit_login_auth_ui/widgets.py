@@ -82,7 +82,7 @@ class __login__:
         return False
 
     def get_username(self):
-        if st.session_state['LOGOUT_BUTTON_HIT'] == False:
+        if not st.session_state['LOGOUT_BUTTON_HIT']:
             fetched_cookies = self.cookies
             if '__streamlit_login_signup_ui_username__' in fetched_cookies.keys():
                 username=fetched_cookies['__streamlit_login_signup_ui_username__']
@@ -95,14 +95,14 @@ class __login__:
         """
 
         # Checks if cookie exists.
-        if st.session_state['LOGGED_IN'] == False:
-            if st.session_state['LOGOUT_BUTTON_HIT'] == False:
+        if not st.session_state['LOGGED_IN']:
+            if not st.session_state['LOGOUT_BUTTON_HIT']:
                 fetched_cookies = self.cookies
                 if '__streamlit_login_signup_ui_username__' in fetched_cookies.keys():
                     if fetched_cookies['__streamlit_login_signup_ui_username__'] != '1c9a923f-fb21-4a91-b3f3-5f18e3f01182':
                         st.session_state['LOGGED_IN'] = True
 
-        if st.session_state['LOGGED_IN'] == False:
+        if not st.session_state['LOGGED_IN']:
             st.session_state['LOGOUT_BUTTON_HIT'] = False 
 
             del_login = st.empty()
@@ -113,10 +113,10 @@ class __login__:
                 st.markdown("###")
                 login_submit_button = st.form_submit_button(label = 'Login')
 
-                if login_submit_button == True:
+                if login_submit_button:
                     authenticate_user_check = check_usr_pass(username, password, self.users_auth_file)
 
-                    if authenticate_user_check == False:
+                    if not authenticate_user_check:
                         st.error("Invalid Username or Password!")
 
                     else:
@@ -228,10 +228,10 @@ class __login__:
             forgot_passwd_submit_button = st.form_submit_button(label = 'Get Password')
 
             if forgot_passwd_submit_button:
-                if email_exists_check == False:
+                if not email_exists_check:
                     st.error("Email ID not registered with us!")
 
-                if email_exists_check == True:
+                if email_exists_check:
                     random_password = generate_random_passwd()
 
                     res = send_passwd_in_email(
@@ -267,17 +267,17 @@ class __login__:
             reset_passwd_submit_button = st.form_submit_button(label='Reset Password')
 
             if reset_passwd_submit_button:
-                if email_exists_check == False:
+                if not email_exists_check:
                     st.error("Email does not exist!")
 
-                elif current_passwd_check == False:
+                elif not current_passwd_check:
                     st.error("Incorrect temporary password!")
 
                 elif new_passwd != new_passwd_1:
                     st.error("Passwords don't match!")
             
-                if email_exists_check == True:
-                    if current_passwd_check == True:
+                if email_exists_check:
+                    if current_passwd_check:
                         change_passwd(email_reset_passwd, new_passwd, self.users_auth_file)
                         st.success("Password Reset Successfully!")
                 
@@ -286,12 +286,12 @@ class __login__:
         """
         Creates the logout widget in the sidebar only if the user is logged in.
         """
-        if st.session_state['LOGGED_IN'] == True:
+        if st.session_state['LOGGED_IN']:
             del_logout = st.sidebar.empty()
             del_logout.markdown("#")
             logout_click_check = del_logout.button(self.logout_button_name)
 
-            if logout_click_check == True:
+            if logout_click_check:
                 st.session_state['LOGOUT_BUTTON_HIT'] = True
                 st.session_state['LOGGED_IN'] = False
                 self.cookies['__streamlit_login_signup_ui_username__'] = '1c9a923f-fb21-4a91-b3f3-5f18e3f01182'
@@ -346,7 +346,7 @@ class __login__:
 
         auth_json_exists_bool = self.check_auth_json_file_exists()
 
-        if auth_json_exists_bool == False:
+        if not auth_json_exists_bool:
             with open(self.users_auth_file, "w") as auth_json:
                 json.dump([], auth_json)
 
@@ -357,7 +357,7 @@ class __login__:
             with c1:
                 self.login_widget()
             with c2:
-                if st.session_state['LOGGED_IN'] == False:
+                if not st.session_state['LOGGED_IN']:
                     self.animation()
         
         if selected_option == 'Create Account':
@@ -378,13 +378,13 @@ class __login__:
         
         self.logout_widget()
 
-        if st.session_state['LOGGED_IN'] == True:
+        if st.session_state['LOGGED_IN']:
             main_page_sidebar.empty()
         
-        if self.hide_menu_bool == True:
+        if self.hide_menu_bool:
             self.hide_menu()
         
-        if self.hide_footer_bool == True:
+        if self.hide_footer_bool:
             self.hide_footer()
         
         return st.session_state['LOGGED_IN']

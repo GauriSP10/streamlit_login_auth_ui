@@ -148,7 +148,8 @@ def check_unique_usr(username_sign_up: str, users_auth_file: str):
         users_auth_file: The file where all the users info are recorded.
 
     Returns:
-        True if username is not in users file. False if username is already existing.
+        True if username is not in users file.
+        False if username is already existing.
     """
     authorized_user_data_master = list()
     with open(users_auth_file, "r") as auth_json:
@@ -162,11 +163,15 @@ def check_unique_usr(username_sign_up: str, users_auth_file: str):
     return True
 
 
-def register_new_usr(name_sign_up: str, email_sign_up: str, username_sign_up: str, password_sign_up: str, users_auth_file: str) -> None:
+def register_new_usr(name_sign_up: str, email_sign_up: str,
+                     username_sign_up: str, password_sign_up:
+                     str, users_auth_file: str) -> None:
     """
     Saves the information of the new user in the users_auth_file.
     """
-    new_usr_data = {'username': username_sign_up, 'name': name_sign_up, 'email': email_sign_up, 'password': ph.hash(password_sign_up)}
+    new_usr_data = {'username': username_sign_up, 'name': name_sign_up,
+                     'email': email_sign_up,
+                     'password': ph.hash(password_sign_up)}
 
     with open(users_auth_file, "r") as auth_json:
         authorized_user_data = json.load(auth_json)
@@ -174,7 +179,7 @@ def register_new_usr(name_sign_up: str, email_sign_up: str, username_sign_up: st
     with open(users_auth_file, "w") as auth_json_write:
         authorized_user_data.append(new_usr_data)
         json.dump(authorized_user_data, auth_json_write)
-        
+
 
 def check_email_exists(email_forgot_passwd: str, users_auth_file: str):
     """
@@ -204,27 +209,27 @@ def send_passwd_in_email(
         company_name: str,
         random_password: str) -> Union[str, CourierAPIException]:
     """Sends email to the user.
-    
+
     Triggers an email to the user containing the randomly generated
     password. If the developer does not use courier auth token, the
     email will not be sent. If the developer uses the courier auth token
     and the email failed to be sent to the user, the developer will
     receive a copy of that email.
     """
-    client = Courier(auth_token = auth_token)
+    client = Courier(auth_token=auth_token)
 
     try:
         client.send_message(
             message={
                 "to": {
-                "email": email_forgot_passwd
+                    "email": email_forgot_passwd
                 },
                 "content": {
-                "title": company_name + ": Login Password!",
-                "body": "Hi! " + username_forgot_passwd + "," + "\n" + "\n" + "Your temporary login password is: " + random_password  + "\n" + "\n" + "{{info}}"
+                    "title": company_name + ": Login Password!",
+                    "body": "Hi! " + username_forgot_passwd + "," + "\n" + "\n" + "Your temporary login password is: " + random_password  + "\n" + "\n" + "{{info}}"
                 },
-                "data":{
-                "info": "Please reset your password at the earliest for security reasons."
+                "data": {
+                    "info": "Please reset your password at the earliest for security reasons."
                 }
             })
     except CourierAPIException as err:
@@ -245,7 +250,7 @@ def change_passwd(email_: str, random_password: str, users_auth_file: str) -> No
             if user['email'] == email_:
                 user['password'] = ph.hash(random_password)
         json.dump(authorized_users_data, auth_json_)
-    
+
 
 def check_current_passwd(email_reset_passwd: str, current_passwd: str, users_auth_file: str) -> bool:
     """
@@ -258,7 +263,7 @@ def check_current_passwd(email_reset_passwd: str, current_passwd: str, users_aut
         for user in authorized_users_data:
             if user['email'] == email_reset_passwd:
                 try:
-                    if ph.verify(user['password'], current_passwd) == True:
+                    if ph.verify(user['password'], current_passwd):
                         return True
                 except:
                     pass

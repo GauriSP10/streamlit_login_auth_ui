@@ -96,8 +96,8 @@ Install the packages from virtual environment.
 ```
 python3.10 -m venv venv
 source venv/bin/activate
-python -m pip install pip -U
-python3.10 -m pip install -r requirement.txt
+python3.10 -m pip install pip -U
+python3.10 -m pip install -r requirements.txt
 ```
 
 **windows**

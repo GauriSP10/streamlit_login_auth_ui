@@ -2,6 +2,7 @@ from streamlit_login_auth_ui.utils import check_unique_usr
 from streamlit_login_auth_ui.utils import check_usr_pass
 from streamlit_login_auth_ui.utils import check_valid_username
 from streamlit_login_auth_ui.utils import check_email_exists
+from streamlit_login_auth_ui.utils import check_unique_email
 
 
 def test_unique_username_1(username='smith', users_auth_file='./tests/users.json'):
@@ -122,3 +123,15 @@ def test_check_email_exists_1(email='smithjudgematter58@gmail.com',
     """Checks email if it exists."""
     status, _ = check_email_exists(email, users_auth_file)
     assert status  # returns True
+
+
+def test_check_unique_email_1(email='smithjudgematter58@gmail.com',
+                              users_auth_file='./tests/users.json'):
+    """Returns False meaning the email had already existed."""
+    assert not check_unique_email(email, users_auth_file)
+
+
+def test_check_unique_email_2(email='diego_1285khyub@gmail.com',
+                              users_auth_file='./tests/users.json'):
+    """Returns True meaning email has not yet existed in users auth file."""
+    assert check_unique_email(email, users_auth_file)

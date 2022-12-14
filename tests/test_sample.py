@@ -1,6 +1,7 @@
 from streamlit_login_auth_ui.utils import check_unique_usr
 from streamlit_login_auth_ui.utils import check_usr_pass
 from streamlit_login_auth_ui.utils import check_valid_username
+from streamlit_login_auth_ui.utils import check_email_exists
 
 
 def test_unique_username_1(username='smith', users_auth_file='./tests/users.json'):
@@ -115,3 +116,9 @@ def test_check_valid_username_6(username: str = 'dieseltoyotamobilemars'):
     """
     assert check_valid_username(username) == "number of characters is above 16"
 
+
+def test_check_email_exists_1(email='smithjudgematter58@gmail.com',
+                              users_auth_file='./tests/users.json'):
+    """Checks email if it exists."""
+    status, _ = check_email_exists(email, users_auth_file)
+    assert status  # returns True

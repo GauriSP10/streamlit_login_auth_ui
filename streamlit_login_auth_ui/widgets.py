@@ -172,7 +172,7 @@ class __login__:
         Renders the lottie animation.
         """
         lottie_json = load_lottieurl(self.lottie_url)
-        st_lottie(lottie_json, width = self.width, height = self.height)
+        st_lottie(lottie_json, width=self.width, height=self.height)
 
 
     def sign_up_widget(self) -> None:
@@ -206,7 +206,7 @@ class __login__:
                 elif not valid_email_check:
                     st.error("Please enter a valid Email!")
                     is_registration_ok = False
-                
+
                 elif not unique_email_check:
                     st.error("Email already exists!")
                     is_registration_ok = False
@@ -230,11 +230,11 @@ class __login__:
         containing a random password.
         """
         with st.form("Forgot Password Form"):
-            email_forgot_passwd = st.text_input("Email", placeholder= 'Please enter your email')
+            email_forgot_passwd = st.text_input("Email", placeholder='Please enter your email')
             email_exists_check, username_forgot_passwd = check_email_exists(email_forgot_passwd, self.users_auth_file)
 
             st.markdown("###")
-            forgot_passwd_submit_button = st.form_submit_button(label = 'Get Password')
+            forgot_passwd_submit_button = st.form_submit_button(label='Get Password')
 
             if forgot_passwd_submit_button:
                 if not email_exists_check:
@@ -323,7 +323,7 @@ class __login__:
                     "container": {"padding": "5px"},
                     "nav-link": {"font-size": "14px", "text-align": "left", "margin":"0px"}} )
         return main_page_sidebar, selected_option
-    
+
 
     def hide_menu(self) -> None:
         """
@@ -362,7 +362,7 @@ class __login__:
         main_page_sidebar, selected_option = self.nav_sidebar()
 
         if selected_option == 'Login':
-            c1, c2 = st.columns([7,3])
+            c1, c2 = st.columns([7, 3])
             with c1:
                 self.login_widget()
             with c2:
@@ -379,26 +379,24 @@ class __login__:
             self.reset_password()
 
         if selected_option == 'Delete Account':
-            c1, c2 = st.columns([7,3])
+            c1, c2 = st.columns([7, 3])
             with c1:
                 self.delete_accnt_widget()
             with c2:
                 self.animation()
-        
+
         self.logout_widget()
 
         if st.session_state['LOGGED_IN']:
             main_page_sidebar.empty()
-        
+
         if self.hide_menu_bool:
             self.hide_menu()
-        
+
         if self.hide_footer_bool:
             self.hide_footer()
-        
+
         return st.session_state['LOGGED_IN']
 
 # Author: Gauri Prabhakar
 # GitHub: https://github.com/GauriSP10/streamlit_login_auth_ui
-
-

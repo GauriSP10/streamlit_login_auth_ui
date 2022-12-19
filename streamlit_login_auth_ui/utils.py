@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, List
 import re
 import json
 from trycourier import Courier
@@ -11,14 +11,29 @@ from trycourier.exceptions import CourierAPIException
 ph = PasswordHasher()
 
 
+def get_users_data(users_auth_file: str) -> List[dict]:
+    """Gets the users data.
+
+    Read the users auth file where users info are saved. Convert
+    it to a list of dictionary.
+
+    Args:
+        users_auth_file: The json file were users info are saved.
+
+    Returns:
+        A list of dict of users data.
+    """
+    with open(users_auth_file, "r") as auth_json:
+        return json.load(auth_json)
+
+
 def check_usr_pass(username: str, password: str, users_auth_file: str) -> bool:
     """
     Authenticates the username and password. The former is case insensitive.
     """
-    with open(users_auth_file, "r") as auth_json:
-        authorized_user_data = json.load(auth_json)
+    authorized_users_data = get_users_data(users_auth_file)
 
-    for registered_user in authorized_user_data:
+    for registered_user in authorized_users_data:
         if registered_user['username'].lower() == username.lower():
             try:
                 passwd_verification_bool = ph.verify(registered_user['password'], password)
@@ -155,11 +170,10 @@ def check_unique_usr(username_sign_up: str, users_auth_file: str):
         False if username is already existing.
     """
     authorized_user_data_master = list()
-    with open(users_auth_file, "r") as auth_json:
-        authorized_users_data = json.load(auth_json)
+    authorized_users_data = get_users_data(users_auth_file)
 
-        for user in authorized_users_data:
-            authorized_user_data_master.append(user['username'].lower())
+    for user in authorized_users_data:
+        authorized_user_data_master.append(user['username'].lower())
 
     if username_sign_up.lower() in authorized_user_data_master:
         return False
@@ -176,21 +190,28 @@ def register_new_usr(name_sign_up: str, email_sign_up: str,
                      'email': email_sign_up,
                      'password': ph.hash(password_sign_up)}
 
-    with open(users_auth_file, "r") as auth_json:
-        authorized_user_data = json.load(auth_json)
+    authorized_users_data = get_users_data(users_auth_file)
+    authorized_users_data.append(new_usr_data)
 
     with open(users_auth_file, "w") as auth_json_write:
-        authorized_user_data.append(new_usr_data)
-        json.dump(authorized_user_data, auth_json_write)
+        json.dump(authorized_users_data, auth_json_write)
 
 
 def check_email_exists(email: str, users_auth_file: str):
+    """Checks if email is present in the users auth file.
+
+    Read the users auth file and check if email is present. Email
+    checking is case insensitive.
+
+    Args:
+        email: The email to check in users auth file.
+        users_auth_file: The json file where users info are saved.
+
+    Returns:
+        A tuple of bool and str or None. If email is present return
+        (True, username) otherwise return (False, None).
     """
-    Checks if the email entered is present in the users auth file.
-    Email checking is case insensitive.
-    """
-    with open(users_auth_file, "r") as auth_json:
-        authorized_users_data = json.load(auth_json)
+    authorized_users_data = get_users_data(users_auth_file)
 
     for user in authorized_users_data:
         if user['email'].lower() == email.lower():
@@ -246,13 +267,14 @@ def change_passwd(email_: str, random_password: str, users_auth_file: str) -> No
     """
     Replaces the old password with the newly generated password.
     """
-    with open(users_auth_file, "r") as auth_json:
-        authorized_users_data = json.load(auth_json)
+    authorized_users_data = get_users_data(users_auth_file)
+
+    for user in authorized_users_data:
+        if user['email'] == email_:
+            user['password'] = ph.hash(random_password)
+            break
 
     with open(users_auth_file, "w") as auth_json_:
-        for user in authorized_users_data:
-            if user['email'] == email_:
-                user['password'] = ph.hash(random_password)
         json.dump(authorized_users_data, auth_json_)
 
 
@@ -261,16 +283,15 @@ def check_current_passwd(email_reset_passwd: str, current_passwd: str, users_aut
     Authenticates the password entered against the username when 
     resetting the password.
     """
-    with open(users_auth_file, "r") as auth_json:
-        authorized_users_data = json.load(auth_json)
+    authorized_users_data = get_users_data(users_auth_file)
 
-        for user in authorized_users_data:
-            if user['email'] == email_reset_passwd:
-                try:
-                    if ph.verify(user['password'], current_passwd):
-                        return True
-                except:
-                    pass
+    for user in authorized_users_data:
+        if user['email'] == email_reset_passwd:
+            try:
+                if ph.verify(user['password'], current_passwd):
+                    return True
+            except:
+                pass
     return False
 
 # Author: Gauri Prabhakar

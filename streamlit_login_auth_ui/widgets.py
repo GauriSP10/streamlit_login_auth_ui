@@ -17,6 +17,7 @@ from .utils import send_passwd_in_email
 from .utils import change_passwd
 from .utils import check_current_passwd
 from .utils import check_valid_username
+from .utils import get_users_data
 
 
 class __login__:
@@ -146,11 +147,10 @@ class __login__:
                 if not is_valid_user:
                     st.error("Invalid Username or Password!")
                 else:
-                    with open(self.users_auth_file, "r") as auth_json:
-                        authorized_user_data = json.load(auth_json)
+                    authorized_users_data = get_users_data(self.users_auth_file)
 
                     # Save users who are not to be deleted.
-                    updated_users = [user for user in authorized_user_data if user['username'] != username]
+                    updated_users = [user for user in authorized_users_data if user['username'] != username]
 
                     with open(self.users_auth_file, "w") as auth_json_write:
                         json.dump(updated_users, auth_json_write)

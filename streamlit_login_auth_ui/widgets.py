@@ -30,7 +30,8 @@ class __login__:
         logout_button_name: str = 'Logout', hide_menu_bool: bool = False,
         hide_footer_bool: bool = False,
         lottie_url: str = "https://assets8.lottiefiles.com/packages/lf20_ktwnwv5m.json",
-        users_auth_file='_secret_auth_.json'):
+        users_auth_file='_secret_auth_.json',
+        is_disable_login: bool = False):
         """
         Arguments:
         -----------
@@ -44,6 +45,7 @@ class __login__:
         8. hide_footer_bool : Pass True if the 'made with streamlit' footer should be hidden.
         9. lottie_url : The lottie animation you would like to use on the login page. Explore animations at - https://lottiefiles.com/featured
         10. users_auth_file : The json file where registered users info are saved.
+        11. is_disable_login : Disables username and password widget and allow the user to login without those.
         """
         self.auth_token = auth_token
         self.company_name = company_name
@@ -54,6 +56,7 @@ class __login__:
         self.hide_footer_bool = hide_footer_bool
         self.lottie_url = lottie_url
         self.users_auth_file = users_auth_file
+        self.is_disable_login = is_disable_login
 
         self.cookies = EncryptedCookieManager(
             prefix="streamlit_login_ui_yummy_cookies",
@@ -108,8 +111,15 @@ class __login__:
 
             del_login = st.empty()
             with del_login.form("Login Form"):
-                username = st.text_input("Username", placeholder = 'Your unique username')
-                password = st.text_input("Password", placeholder = 'Your password', type = 'password')
+                username = st.text_input(
+                    "Username",
+                    placeholder='Your unique username',
+                    disabled=self.is_disable_login)
+                password = st.text_input(
+                    "Password",
+                    placeholder='Your password',
+                    type='password',
+                    disabled=self.is_disable_login)
 
                 st.markdown("###")
                 login_submit_button = st.form_submit_button(label = 'Login')
@@ -117,9 +127,8 @@ class __login__:
                 if login_submit_button:
                     authenticate_user_check = check_usr_pass(username, password, self.users_auth_file)
 
-                    if not authenticate_user_check:
+                    if not authenticate_user_check and not self.is_disable_login:
                         st.error("Invalid Username or Password!")
-
                     else:
                         st.session_state['LOGGED_IN'] = True
                         self.cookies['__streamlit_login_signup_ui_username__'] = username

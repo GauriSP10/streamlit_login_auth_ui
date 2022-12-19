@@ -17,7 +17,8 @@ __login__obj = __login__(
     hide_menu_bool=False,
     hide_footer_bool=False,
     lottie_url='https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json',
-    users_auth_file=users_auth_file)
+    users_auth_file=users_auth_file,
+    is_disable_login=False)
 
 is_logged_in = __login__obj.build_login_ui()
 

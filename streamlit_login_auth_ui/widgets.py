@@ -15,7 +15,7 @@ from .utils import check_email_exists
 from .utils import generate_random_passwd
 from .utils import send_passwd_in_email
 from .utils import change_passwd
-from .utils import check_current_passwd
+from .utils import check_email_and_password
 from .utils import check_valid_username
 from .utils import get_users_data
 
@@ -266,7 +266,7 @@ class __login__:
             email_exists_check, username_reset_passwd = check_email_exists(email_reset_passwd, self.users_auth_file)
 
             current_passwd = st.text_input("Temporary Password", placeholder='Please enter the password you received in the email')
-            current_passwd_check = check_current_passwd(email_reset_passwd, current_passwd, self.users_auth_file)
+            current_passwd_check = check_email_and_password(email_reset_passwd, current_passwd, self.users_auth_file)
 
             new_passwd = st.text_input("New Password", placeholder='Please enter a new, strong password', type='password')
 

@@ -278,7 +278,7 @@ def change_passwd(email_: str, random_password: str, users_auth_file: str) -> No
         json.dump(authorized_users_data, auth_json_)
 
 
-def check_current_passwd(email: str, password: str, users_auth_file: str) -> bool:
+def check_email_and_password(email: str, password: str, users_auth_file: str) -> bool:
     """Checks the email and password.
 
     Read the users auth file and check if email owns the password.

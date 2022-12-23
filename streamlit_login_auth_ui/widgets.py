@@ -16,7 +16,7 @@ from .utils import generate_random_passwd
 from .utils import send_passwd_in_email
 from .utils import change_passwd
 from .utils import check_email_and_password
-from .utils import check_valid_username
+from .utils import check_valid_username, check_valid_password
 from .utils import get_users_data
 
 
@@ -192,6 +192,7 @@ class __login__:
             unique_username_check = check_unique_usr(username_sign_up, self.users_auth_file)
 
             password_sign_up = st.text_input("Password *", placeholder='Create a strong password', type='password')
+            valid_password_check = check_valid_password(password_sign_up)
 
             st.markdown("###")
             sign_up_submit_button = st.form_submit_button(label='Register')
@@ -217,6 +218,10 @@ class __login__:
 
                 elif not unique_username_check:
                     st.error(f'Sorry, username {username_sign_up} already exists!')
+                    is_registration_ok = False
+
+                elif valid_password_check != 'valid':
+                    st.error(f'password is invalid -> {valid_password_check}')
                     is_registration_ok = False
 
                 if is_registration_ok:

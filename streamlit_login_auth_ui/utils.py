@@ -99,6 +99,40 @@ def check_unique_email(email: str, users_auth_file: str) -> bool:
     return True
 
 
+def check_valid_password(password: str) -> str:
+    """Checks if password is valid.
+
+    1. password with whitespace is invalid.
+    The following sample passwords are invalid.
+    password = " kul89_mkou"
+    password = "smith kul89_mkou"
+    password = "covid19 "
+
+    2. If length is below 8 it is invalid.
+    password = "Kb584"
+    
+    3. If length is above 64 it is invalid.
+
+    Args:
+        password: The password to check.
+
+    Returns:
+        valid if password is valid otherwise a string about the issue.
+        It can be 'there is whitespace', 'number of characters is below 8',
+        'number of characters is above 64'.
+    """
+    if password.count(' ') >= 1:
+        return 'there is whitespace'
+
+    if len(password) < 8:
+        return 'number of characters is below 8'
+
+    if len(password) > 64:
+        return 'number of characters is above 64'
+
+    return 'valid'
+
+
 def check_valid_username(name_sign_up: str) -> str:
     """Checks if username is valid.
 

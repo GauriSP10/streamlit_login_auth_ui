@@ -279,9 +279,10 @@ def change_passwd(email_: str, random_password: str, users_auth_file: str) -> No
 
 
 def check_current_passwd(email_reset_passwd: str, current_passwd: str, users_auth_file: str) -> bool:
-    """
-    Authenticates the password entered against the username when 
-    resetting the password.
+    """Checks the email and password.
+
+    Read the users auth file and check if email owns the password.
+    This is used when user resets the password.
     """
     authorized_users_data = get_users_data(users_auth_file)
 

@@ -4,6 +4,7 @@ from streamlit_login_auth_ui.utils import check_valid_username
 from streamlit_login_auth_ui.utils import check_email_exists
 from streamlit_login_auth_ui.utils import check_unique_email
 from streamlit_login_auth_ui.utils import check_email_and_password
+from streamlit_login_auth_ui.utils import check_valid_password
 
 
 def test_unique_username_1(username='smith', users_auth_file='./tests/users.json'):
@@ -147,3 +148,19 @@ def test_check_email_and_password_1(email='gggg@gmail.com',
     password in users auth file users.json.    
     """
     assert check_email_and_password(email, password, users_auth_file)
+
+
+def test_check_valid_password_1(password="Judge582yt"):
+    assert check_valid_password(password) == 'valid'
+
+
+def test_check_valid_password_2(password=" Jloe25"):
+    assert check_valid_password(password) == 'there is whitespace'
+
+
+def test_check_valid_password_3(password="mmP58"):
+    assert check_valid_password(password) == 'number of characters is below 8'
+
+
+def test_check_valid_password_3(password="mkLjudfeft256dfdrefmkded5fedf!fdrefdf>ldrefdrefodkfdfdrefdf2dfe5dferd8"):
+    assert check_valid_password(password) == 'number of characters is above 64'

@@ -1,3 +1,4 @@
+from typing import Optional
 import streamlit as st
 import json
 import os
@@ -18,6 +19,10 @@ from .utils import change_passwd
 from .utils import check_email_and_password
 from .utils import check_valid_username, check_valid_password
 from .utils import get_users_data
+import deta
+from typing import NewType
+
+DetaDbType = NewType('DetaDbType', deta.base._Base)
 
 
 class __login__:
@@ -31,7 +36,8 @@ class __login__:
         hide_footer_bool: bool = False,
         lottie_url: str = "https://assets8.lottiefiles.com/packages/lf20_ktwnwv5m.json",
         users_auth_file='_secret_auth_.json',
-        is_disable_login: bool = False):
+        is_disable_login: bool = False,
+        detadb: Optional[DetaDbType] = None):
         """
         Arguments:
         -----------
@@ -46,6 +52,7 @@ class __login__:
         9. lottie_url : The lottie animation you would like to use on the login page. Explore animations at - https://lottiefiles.com/featured
         10. users_auth_file : The json file where registered users info are saved.
         11. is_disable_login : Disables username and password widget and allow the user to login without those.
+        12. detadb : Deta database 
         """
         self.auth_token = auth_token
         self.company_name = company_name
@@ -57,6 +64,7 @@ class __login__:
         self.lottie_url = lottie_url
         self.users_auth_file = users_auth_file
         self.is_disable_login = is_disable_login
+        self.detadb = detadb
 
         self.cookies = EncryptedCookieManager(
             prefix="streamlit_login_ui_yummy_cookies",
@@ -125,7 +133,7 @@ class __login__:
                 login_submit_button = st.form_submit_button(label = 'Login')
 
                 if login_submit_button:
-                    authenticate_user_check = check_usr_pass(username, password, self.users_auth_file)
+                    authenticate_user_check = check_usr_pass(username, password, self.users_auth_file, self.detadb)
 
                     if not authenticate_user_check and not self.is_disable_login:
                         st.error("Invalid Username or Password!")
@@ -151,20 +159,31 @@ class __login__:
             delete_submit_button = st.form_submit_button(label='Delete Account')
 
             if delete_submit_button:
-                is_valid_user = check_usr_pass(username, password, self.users_auth_file)
+                is_valid_user = check_usr_pass(username, password, self.users_auth_file, self.detadb)
 
                 if not is_valid_user:
                     st.error("Invalid Username or Password!")
                 else:
-                    authorized_users_data = get_users_data(self.users_auth_file)
+                    is_user_deleted = False
 
-                    # Save users who are not to be deleted.
-                    updated_users = [user for user in authorized_users_data if user['username'] != username]
+                    # Delete user from deta base.
+                    if self.detadb is not None:
+                        user: dict = self.detadb.get(username.lower())  # deta key is lower case
+                        if len(user):
+                            self.detadb.delete(username.lower())  # deta key is lower case
+                            is_user_deleted = True
+                    else:
+                        authorized_users_data = get_users_data(self.users_auth_file)
 
-                    with open(self.users_auth_file, "w") as auth_json_write:
-                        json.dump(updated_users, auth_json_write)
+                        # Save users who are not to be deleted.
+                        updated_users = [user for user in authorized_users_data if user['username'] != username]
 
-                    st.success("Account is successfully deleted!")
+                        with open(self.users_auth_file, "w") as auth_json_write:
+                            json.dump(updated_users, auth_json_write)
+                        is_user_deleted = True
+                    
+                    if is_user_deleted:
+                        st.success("Account is successfully deleted!")
 
 
     def animation(self) -> None:
@@ -181,24 +200,21 @@ class __login__:
         """
         with st.form("Sign Up Form"):
             name_sign_up = st.text_input("Name *", placeholder='Please enter your name')
-            valid_name_check = check_valid_name(name_sign_up)
-
-            email_sign_up = st.text_input("Email *", placeholder='Please enter your email')
-            valid_email_check = check_valid_email(email_sign_up)
-            unique_email_check = check_unique_email(email_sign_up, self.users_auth_file)
-            
+            email_sign_up = st.text_input("Email *", placeholder='Please enter your email')            
             username_sign_up = st.text_input("Username *", placeholder='Enter a unique username')
-            valid_username_message = check_valid_username(username_sign_up)
-            unique_username_check = check_unique_usr(username_sign_up, self.users_auth_file)
-
             password_sign_up = st.text_input("Password *", placeholder='Create a strong password', type='password')
-            valid_password_check = check_valid_password(password_sign_up)
-
             st.markdown("###")
             sign_up_submit_button = st.form_submit_button(label='Register')
 
             if sign_up_submit_button:
                 is_registration_ok = True
+
+                valid_name_check = check_valid_name(name_sign_up)
+                valid_email_check = check_valid_email(email_sign_up)
+                unique_email_check = check_unique_email(email_sign_up, self.users_auth_file, self.detadb)
+                valid_username_message = check_valid_username(username_sign_up)
+                unique_username_check = check_unique_usr(username_sign_up, self.users_auth_file, self.detadb)
+                valid_password_check = check_valid_password(password_sign_up)
 
                 if not valid_name_check:
                     st.error("Please enter a valid name!")
@@ -225,7 +241,7 @@ class __login__:
                     is_registration_ok = False
 
                 if is_registration_ok:
-                    register_new_usr(name_sign_up, email_sign_up, username_sign_up, password_sign_up, self.users_auth_file)
+                    register_new_usr(name_sign_up, email_sign_up, username_sign_up, password_sign_up, self.users_auth_file, self.detadb)
                     st.success("Registration Successful!")
 
 
@@ -236,12 +252,13 @@ class __login__:
         """
         with st.form("Forgot Password Form"):
             email_forgot_passwd = st.text_input("Email", placeholder='Please enter your email')
-            email_exists_check, username_forgot_passwd = check_email_exists(email_forgot_passwd, self.users_auth_file)
 
             st.markdown("###")
             forgot_passwd_submit_button = st.form_submit_button(label='Get Password')
 
             if forgot_passwd_submit_button:
+                email_exists_check, username_forgot_passwd = check_email_exists(email_forgot_passwd, self.users_auth_file, self.detadb)
+                
                 if not email_exists_check:
                     st.error("Email ID not registered with us!")
 
@@ -255,7 +272,7 @@ class __login__:
                         self.company_name,
                         random_password)
                     if res == 'OK':
-                        change_passwd(email_forgot_passwd, random_password, self.users_auth_file)
+                        change_passwd(email_forgot_passwd, random_password, self.users_auth_file, self.detadb)
                         st.success("Secure Password Sent Successfully!")
                     else:
                         st.error(f"Failed to send email!, {res.message}")
@@ -268,19 +285,17 @@ class __login__:
         """
         with st.form("Reset Password Form"):
             email_reset_passwd = st.text_input("Email", placeholder='Please enter your email')
-            email_exists_check, username_reset_passwd = check_email_exists(email_reset_passwd, self.users_auth_file)
-
             current_passwd = st.text_input("Temporary Password", placeholder='Please enter the password you received in the email')
-            current_passwd_check = check_email_and_password(email_reset_passwd, current_passwd, self.users_auth_file)
-
             new_passwd = st.text_input("New Password", placeholder='Please enter a new, strong password', type='password')
-
             new_passwd_1 = st.text_input("Re - Enter New Password", placeholder='Please re- enter the new password', type='password')
 
             st.markdown("###")
             reset_passwd_submit_button = st.form_submit_button(label='Reset Password')
 
             if reset_passwd_submit_button:
+                email_exists_check, username_reset_passwd = check_email_exists(email_reset_passwd, self.users_auth_file, self.detadb)
+                current_passwd_check = check_email_and_password(email_reset_passwd, current_passwd, self.users_auth_file, self.detadb)
+
                 if not email_exists_check:
                     st.error("Email does not exist!")
 
@@ -292,7 +307,7 @@ class __login__:
             
                 if email_exists_check:
                     if current_passwd_check:
-                        change_passwd(email_reset_passwd, new_passwd, self.users_auth_file)
+                        change_passwd(email_reset_passwd, new_passwd, self.users_auth_file, self.detadb)
                         st.success("Password Reset Successfully!")
                 
 
@@ -358,11 +373,13 @@ class __login__:
         if 'LOGOUT_BUTTON_HIT' not in st.session_state:
             st.session_state['LOGOUT_BUTTON_HIT'] = False
 
-        auth_json_exists_bool = self.check_auth_json_file_exists()
-
-        if not auth_json_exists_bool:
-            with open(self.users_auth_file, "w") as auth_json:
-                json.dump([], auth_json)
+        # If we are using deta bases, do not create a local users auth file
+        # like __secret_auth__.json, etc.
+        if self.detadb is None:
+            auth_json_exists_bool = self.check_auth_json_file_exists()
+            if not auth_json_exists_bool:
+                with open(self.users_auth_file, "w") as auth_json:
+                    json.dump([], auth_json)
 
         main_page_sidebar, selected_option = self.nav_sidebar()
 

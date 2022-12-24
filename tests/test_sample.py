@@ -9,17 +9,17 @@ from streamlit_login_auth_ui.utils import check_valid_password
 
 def test_unique_username_1(username='smith', users_auth_file='./tests/users.json'):
     """Returns False"""
-    assert not check_unique_usr(username, users_auth_file)
+    assert not check_unique_usr(username, users_auth_file, None)
 
 
 def test_unique_username_2(username='peter', users_auth_file='./tests/users.json'):
     """Returns True"""
-    assert check_unique_usr(username, users_auth_file)
+    assert check_unique_usr(username, users_auth_file, None)
 
 
 def test_check_usr_pass_1(username='smith', password='door_5954', users_auth_file='./tests/users.json'):
     """Returns True"""
-    assert check_usr_pass(username, password, users_auth_file)
+    assert check_usr_pass(username, password, users_auth_file, None)
 
 
 def test_check_usr_pass_2(username='Smith', password='door_5954', users_auth_file='./tests/users.json'):
@@ -29,7 +29,7 @@ def test_check_usr_pass_2(username='Smith', password='door_5954', users_auth_fil
     registered in users.json. The one we are checking is Smith with capital S.
     smith and Smith are the same person.
     """
-    assert check_usr_pass(username, password, users_auth_file)
+    assert check_usr_pass(username, password, users_auth_file, None)
 
 
 def test_check_usr_pass_3(username='Will', password='door_5954', users_auth_file='./tests/users.json'):
@@ -37,7 +37,7 @@ def test_check_usr_pass_3(username='Will', password='door_5954', users_auth_file
 
     It returns False because Will username does not exist in users.json.    
     """
-    assert not check_usr_pass(username, password, users_auth_file)
+    assert not check_usr_pass(username, password, users_auth_file, None)
 
 
 def test_check_usr_pass_4(username='smith', password='window_5954', users_auth_file='./tests/users.json'):
@@ -45,7 +45,7 @@ def test_check_usr_pass_4(username='smith', password='window_5954', users_auth_f
 
     It returns False because password window_5954 is incorrect for smith username.
     """
-    assert not check_usr_pass(username, password, users_auth_file)
+    assert not check_usr_pass(username, password, users_auth_file, None)
 
 
 def test_check_valid_username_1(username: str = ' peace'):
@@ -123,20 +123,20 @@ def test_check_valid_username_6(username: str = 'dieseltoyotamobilemars'):
 def test_check_email_exists_1(email='smithjudgematter58@gmail.com',
                               users_auth_file='./tests/users.json'):
     """Checks email if it exists."""
-    status, _ = check_email_exists(email, users_auth_file)
+    status, _ = check_email_exists(email, users_auth_file, None)
     assert status  # returns True
 
 
 def test_check_unique_email_1(email='smithjudgematter58@gmail.com',
                               users_auth_file='./tests/users.json'):
     """Returns False meaning the email had already existed."""
-    assert not check_unique_email(email, users_auth_file)
+    assert not check_unique_email(email, users_auth_file, None)
 
 
 def test_check_unique_email_2(email='diego_1285khyub@gmail.com',
                               users_auth_file='./tests/users.json'):
     """Returns True meaning email has not yet existed in users auth file."""
-    assert check_unique_email(email, users_auth_file)
+    assert check_unique_email(email, users_auth_file, None)
 
 
 def test_check_email_and_password_1(email='gggg@gmail.com',
@@ -147,7 +147,7 @@ def test_check_email_and_password_1(email='gggg@gmail.com',
     This will return True because the email gggg@gmail.com has gggg
     password in users auth file users.json.    
     """
-    assert check_email_and_password(email, password, users_auth_file)
+    assert check_email_and_password(email, password, users_auth_file, None)
 
 
 def test_check_valid_password_1(password="Judge582yt"):

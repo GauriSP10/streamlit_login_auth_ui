@@ -1,4 +1,4 @@
-from typing import Union, List
+from typing import Union, Optional
 import re
 import json
 from trycourier import Courier
@@ -6,12 +6,16 @@ import secrets
 from argon2 import PasswordHasher
 import requests
 from trycourier.exceptions import CourierAPIException
+import deta
+from typing import NewType
+
+DetaDbType = NewType('DetaDbType', deta.base._Base)
 
 
 ph = PasswordHasher()
 
 
-def get_users_data(users_auth_file: str) -> List[dict]:
+def get_users_data(users_auth_file: str) -> list[dict]:
     """Gets the users data.
 
     Read the users auth file where users info are saved. Convert
@@ -27,21 +31,38 @@ def get_users_data(users_auth_file: str) -> List[dict]:
         return json.load(auth_json)
 
 
-def check_usr_pass(username: str, password: str, users_auth_file: str) -> bool:
+def check_usr_pass(username: str, password: str, users_auth_file: str,
+                   detadb: Optional[DetaDbType]) -> bool:
     """
     Authenticates the username and password. The former is case insensitive.
     """
-    authorized_users_data = get_users_data(users_auth_file)
+    if detadb is not None:
+        if len(username) and len(password):
+            user: dict = detadb.get(username.lower())  # deta key is lower case
+            if user is None:
+                return False
 
-    for registered_user in authorized_users_data:
-        if registered_user['username'].lower() == username.lower():
             try:
-                passwd_verification_bool = ph.verify(registered_user['password'], password)
+                is_password_ok = ph.verify(user['password'], password)
             except:
                 pass
             else:
-                if passwd_verification_bool:
+                if is_password_ok:
                     return True
+
+    # Else read json file.
+    else:
+        authorized_users_data = get_users_data(users_auth_file)
+
+        for registered_user in authorized_users_data:
+            if registered_user['username'].lower() == username.lower():
+                try:
+                    passwd_verification_bool = ph.verify(registered_user['password'], password)
+                except:
+                    pass
+                else:
+                    if passwd_verification_bool:
+                        return True
     return False
 
 
@@ -80,7 +101,7 @@ def check_valid_email(email_sign_up: str) -> bool:
     return False
 
 
-def check_unique_email(email: str, users_auth_file: str) -> bool:
+def check_unique_email(email: str, users_auth_file: str, detadb: Optional[DetaDbType]) -> bool:
     """Checks if email is not in users auth file.
 
     Lookup in the users auth file if email is not there. Email checking
@@ -93,9 +114,19 @@ def check_unique_email(email: str, users_auth_file: str) -> bool:
     Returns:
         True if not found in users auth file. False if it exists already.
     """
-    is_existing, _ = check_email_exists(email, users_auth_file)
-    if is_existing:
-        return False
+    # Check username in deta base
+    if detadb is not None:
+        if len(email):
+            res = detadb.fetch({'email': email.lower()})  # email in deta is in lower case
+            users: list[dict] = res.items
+            if len(users):
+                return False
+
+    # Else read json file.
+    else:
+        is_existing, _ = check_email_exists(email, users_auth_file, detadb)
+        if is_existing:
+            return False
     return True
 
 
@@ -189,7 +220,7 @@ def check_valid_username(name_sign_up: str) -> str:
     return 'valid'
 
 
-def check_unique_usr(username_sign_up: str, users_auth_file: str):
+def check_unique_usr(username_sign_up: str, users_auth_file: str, detadb: Optional[DetaDbType]):
     """Checks if the username is in users file.
 
     The username check is case insensitive meaning "smith" and
@@ -203,35 +234,56 @@ def check_unique_usr(username_sign_up: str, users_auth_file: str):
         True if username is not in users file.
         False if username is already existing.
     """
-    authorized_user_data_master = list()
-    authorized_users_data = get_users_data(users_auth_file)
+    # Check username in deta base
+    if detadb is not None:
+        if len(username_sign_up):
+            user: dict = detadb.get(username_sign_up.lower())  # deta key is lower case
+            if user is not None:
+                return False
 
-    for user in authorized_users_data:
-        authorized_user_data_master.append(user['username'].lower())
+    # Else read json file.
+    else:
+        authorized_user_data_master = list()
+        authorized_users_data = get_users_data(users_auth_file)
 
-    if username_sign_up.lower() in authorized_user_data_master:
-        return False
+        for user in authorized_users_data:
+            authorized_user_data_master.append(user['username'].lower())
+
+        if username_sign_up.lower() in authorized_user_data_master:
+            return False
     return True
 
 
 def register_new_usr(name_sign_up: str, email_sign_up: str,
                      username_sign_up: str, password_sign_up:
-                     str, users_auth_file: str) -> None:
+                     str, users_auth_file: str,
+                     detadb: Optional[DetaDbType]) -> None:
+    """Saves new user info in the users_auth_file or in deta base.
+
+    username and email are converted to lowercase before saving.
     """
-    Saves the information of the new user in the users_auth_file.
-    """
-    new_usr_data = {'username': username_sign_up, 'name': name_sign_up,
-                     'email': email_sign_up,
-                     'password': ph.hash(password_sign_up)}
+    username_sign_up = username_sign_up.lower()
+    email_sign_up = email_sign_up.lower()
 
-    authorized_users_data = get_users_data(users_auth_file)
-    authorized_users_data.append(new_usr_data)
+    new_usr_data = {'username': username_sign_up,
+                    'name': name_sign_up,
+                    'email': email_sign_up,
+                    'password': ph.hash(password_sign_up)}
 
-    with open(users_auth_file, "w") as auth_json_write:
-        json.dump(authorized_users_data, auth_json_write)
+    # Save to deta db.
+    if detadb is not None:
+        detadb.insert(new_usr_data, key=username_sign_up)
+
+    # Else save it to default users auth json file.
+    else:
+        authorized_users_data = get_users_data(users_auth_file)
+        authorized_users_data.append(new_usr_data)
+
+        with open(users_auth_file, "w") as auth_json_write:
+            json.dump(authorized_users_data, auth_json_write)
 
 
-def check_email_exists(email: str, users_auth_file: str):
+def check_email_exists(email: str, users_auth_file: str, detadb: Optional[DetaDbType]):
     """Checks if email is present in the users auth file.
 
     Read the users auth file and check if email is present. Email
@@ -245,12 +297,24 @@ def check_email_exists(email: str, users_auth_file: str):
         A tuple of bool and str or None. If email is present return
         (True, username) otherwise return (False, None).
     """
-    authorized_users_data = get_users_data(users_auth_file)
+    email = email.lower()
 
-    for user in authorized_users_data:
-        if user['email'].lower() == email.lower():
-            return True, user['username']
-    return False, None
+    # Check email in deta base
+    if detadb is not None:
+        if len(email):
+            res = detadb.fetch({'email': email})
+            users: list[dict] = res.items
+            for user in users:
+                return True, user['username']
+        return False, None
+
+    # Else check email from json file.
+    else:
+        authorized_users_data = get_users_data(users_auth_file)    
+        for user in authorized_users_data:
+            if user['email'] == email:
+                return True, user['username']
+        return False, None
 
 
 def generate_random_passwd() -> str:
@@ -297,36 +361,70 @@ def send_passwd_in_email(
         return 'OK'
 
 
-def change_passwd(email_: str, random_password: str, users_auth_file: str) -> None:
+def change_passwd(email: str, random_password: str, users_auth_file: str, detadb: Optional[DetaDbType]) -> None:
     """
     Replaces the old password with the newly generated password.
     """
-    authorized_users_data = get_users_data(users_auth_file)
+    email = email.lower()
 
-    for user in authorized_users_data:
-        if user['email'] == email_:
-            user['password'] = ph.hash(random_password)
-            break
+    # Check email and password in deta base
+    if detadb is not None:
+        if len(email) and len(random_password):
+            res = detadb.fetch({'email': email})
+            users: list[dict] = res.items
+            for user in users:
+                if user['email'] == email:
+                    hashed_password = ph.hash(random_password)
+                    user_update = {
+                        'password': hashed_password
+                    }
+                    detadb.update(user_update, user['username'])
+                    break
 
-    with open(users_auth_file, "w") as auth_json_:
-        json.dump(authorized_users_data, auth_json_)
+    # Else read json file.
+    else:
+        authorized_users_data = get_users_data(users_auth_file)
+
+        for user in authorized_users_data:
+            if user['email'] == email:
+                user['password'] = ph.hash(random_password)
+                break
+
+        with open(users_auth_file, "w") as auth_json_:
+            json.dump(authorized_users_data, auth_json_)
 
 
-def check_email_and_password(email: str, password: str, users_auth_file: str) -> bool:
+def check_email_and_password(email: str, password: str, users_auth_file: str, detadb: Optional[DetaDbType]) -> bool:
     """Checks the email and password.
 
     Read the users auth file and check if email owns the password.
     This is used when user resets the password.
     """
-    authorized_users_data = get_users_data(users_auth_file)
+    email = email.lower()
 
-    for user in authorized_users_data:
-        if user['email'].lower() == email.lower():
-            try:
-                if ph.verify(user['password'], password):
-                    return True
-            except:
-                pass
+    # Check email and password in deta base
+    if detadb is not None:
+        if len(email) and len(password):
+            res = detadb.fetch({'email': email})
+            users: list[dict] = res.items
+            if len(users) and users[0]['email'] == email:
+                try:
+                    if ph.verify(users[0]['password'], password):
+                        return True
+                except:
+                    return False
+
+    # Else read json file.
+    else:
+        authorized_users_data = get_users_data(users_auth_file)
+
+        for user in authorized_users_data:
+            if user['email'] == email:
+                try:
+                    if ph.verify(user['password'], password):
+                        return True
+                except:
+                    pass
     return False
 
 # Author: Gauri Prabhakar

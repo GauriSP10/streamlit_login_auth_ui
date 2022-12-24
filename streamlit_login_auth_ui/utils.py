@@ -31,8 +31,9 @@ def get_users_data(users_auth_file: str) -> list[dict]:
         return json.load(auth_json)
 
 
-def check_usr_pass(username: str, password: str, users_auth_file: str,
-                   detadb: Optional[DetaDbType]) -> bool:
+def check_username_and_password(
+        username: str, password: str, users_auth_file: str,
+        detadb: Optional[DetaDbType]) -> bool:
     """
     Authenticates the username and password. The former is case insensitive.
     """

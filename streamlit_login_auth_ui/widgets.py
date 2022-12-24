@@ -5,7 +5,7 @@ import os
 from streamlit_lottie import st_lottie
 from streamlit_option_menu import option_menu
 from streamlit_cookies_manager import EncryptedCookieManager
-from .utils import check_usr_pass
+from .utils import check_username_and_password
 from .utils import load_lottieurl
 from .utils import check_valid_name
 from .utils import check_valid_email
@@ -133,7 +133,8 @@ class __login__:
                 login_submit_button = st.form_submit_button(label = 'Login')
 
                 if login_submit_button:
-                    authenticate_user_check = check_usr_pass(username, password, self.users_auth_file, self.detadb)
+                    authenticate_user_check = check_username_and_password(
+                        username, password, self.users_auth_file, self.detadb)
 
                     if not authenticate_user_check and not self.is_disable_login:
                         st.error("Invalid Username or Password!")
@@ -159,7 +160,8 @@ class __login__:
             delete_submit_button = st.form_submit_button(label='Delete Account')
 
             if delete_submit_button:
-                is_valid_user = check_usr_pass(username, password, self.users_auth_file, self.detadb)
+                is_valid_user = check_username_and_password(
+                    username, password, self.users_auth_file, self.detadb)
 
                 if not is_valid_user:
                     st.error("Invalid Username or Password!")

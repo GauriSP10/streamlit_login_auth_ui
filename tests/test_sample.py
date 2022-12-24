@@ -1,5 +1,5 @@
 from streamlit_login_auth_ui.utils import check_unique_usr
-from streamlit_login_auth_ui.utils import check_usr_pass
+from streamlit_login_auth_ui.utils import check_username_and_password
 from streamlit_login_auth_ui.utils import check_valid_username
 from streamlit_login_auth_ui.utils import check_email_exists
 from streamlit_login_auth_ui.utils import check_unique_email
@@ -19,7 +19,7 @@ def test_unique_username_2(username='peter', users_auth_file='./tests/users.json
 
 def test_check_usr_pass_1(username='smith', password='door_5954', users_auth_file='./tests/users.json'):
     """Returns True"""
-    assert check_usr_pass(username, password, users_auth_file, None)
+    assert check_username_and_password(username, password, users_auth_file, None)
 
 
 def test_check_usr_pass_2(username='Smith', password='door_5954', users_auth_file='./tests/users.json'):
@@ -29,7 +29,7 @@ def test_check_usr_pass_2(username='Smith', password='door_5954', users_auth_fil
     registered in users.json. The one we are checking is Smith with capital S.
     smith and Smith are the same person.
     """
-    assert check_usr_pass(username, password, users_auth_file, None)
+    assert check_username_and_password(username, password, users_auth_file, None)
 
 
 def test_check_usr_pass_3(username='Will', password='door_5954', users_auth_file='./tests/users.json'):
@@ -37,7 +37,7 @@ def test_check_usr_pass_3(username='Will', password='door_5954', users_auth_file
 
     It returns False because Will username does not exist in users.json.    
     """
-    assert not check_usr_pass(username, password, users_auth_file, None)
+    assert not check_username_and_password(username, password, users_auth_file, None)
 
 
 def test_check_usr_pass_4(username='smith', password='window_5954', users_auth_file='./tests/users.json'):
@@ -45,7 +45,7 @@ def test_check_usr_pass_4(username='smith', password='window_5954', users_auth_f
 
     It returns False because password window_5954 is incorrect for smith username.
     """
-    assert not check_usr_pass(username, password, users_auth_file, None)
+    assert not check_username_and_password(username, password, users_auth_file, None)
 
 
 def test_check_valid_username_1(username: str = ' peace'):

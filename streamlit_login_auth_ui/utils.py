@@ -257,7 +257,7 @@ def check_unique_username(username_sign_up: str, users_auth_file: str, detadb: O
     return True
 
 
-def register_new_usr(name_sign_up: str, email_sign_up: str,
+def register_new_user(name_sign_up: str, email_sign_up: str,
                      username_sign_up: str, password_sign_up:
                      str, users_auth_file: str,
                      detadb: Optional[DetaDbType]) -> None:

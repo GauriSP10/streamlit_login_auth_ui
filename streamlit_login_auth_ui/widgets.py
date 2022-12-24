@@ -11,7 +11,7 @@ from .utils import check_valid_name
 from .utils import check_valid_email
 from .utils import check_unique_email
 from .utils import check_unique_username
-from .utils import register_new_usr
+from .utils import register_new_user
 from .utils import check_email_exists
 from .utils import generate_random_passwd
 from .utils import send_passwd_in_email
@@ -243,7 +243,7 @@ class __login__:
                     is_registration_ok = False
 
                 if is_registration_ok:
-                    register_new_usr(name_sign_up, email_sign_up, username_sign_up, password_sign_up, self.users_auth_file, self.detadb)                    
+                    register_new_user(name_sign_up, email_sign_up, username_sign_up, password_sign_up, self.users_auth_file, self.detadb)                    
                     st.success("Registration Successful!")
 
 

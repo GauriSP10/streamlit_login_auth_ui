@@ -203,8 +203,13 @@ class __login__:
         with st.form("Sign Up Form"):
             name_sign_up = st.text_input("Name *", placeholder='Please enter your name')
             email_sign_up = st.text_input("Email *", placeholder='Please enter your email')            
-            username_sign_up = st.text_input("Username *", placeholder='Enter a unique username')
-            password_sign_up = st.text_input("Password *", placeholder='Create a strong password', type='password')
+            username_sign_up = st.text_input(
+                "Username *", placeholder='Enter a unique username',
+                help='Minimum character is 4, maximum is 16, no whitespace, case insensitive.')
+            password_sign_up = st.text_input(
+                "Password *", placeholder='Create a strong password',
+                 type='password',
+                 help='Minimum character is 8, maximum is 64, and no whitespace.')
             st.markdown("###")
             sign_up_submit_button = st.form_submit_button(label='Register')
 

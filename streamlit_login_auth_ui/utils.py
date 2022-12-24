@@ -222,14 +222,16 @@ def check_valid_username(name_sign_up: str) -> str:
 
 
 def check_unique_usr(username_sign_up: str, users_auth_file: str, detadb: Optional[DetaDbType]):
-    """Checks if the username is in users file.
+    """Checks if the username is in users auth file or deta base.
 
-    The username check is case insensitive meaning "smith" and
-    "Smith" are the same.
+    If detadb is specified, we look into the cloud deta base. If not we will
+    search if username is in json file. The username check is case insensitive
+    meaning "smith" and "Smith" are the same.
 
     Args:
         username_sign_up: The username to check in users file.
         users_auth_file: The file where all the users info are recorded.
+        detadb: The database pointer that can query the deta base.
 
     Returns:
         True if username is not in users file.

@@ -1,4 +1,4 @@
-from streamlit_login_auth_ui.utils import check_unique_usr
+from streamlit_login_auth_ui.utils import check_unique_username
 from streamlit_login_auth_ui.utils import check_username_and_password
 from streamlit_login_auth_ui.utils import check_valid_username
 from streamlit_login_auth_ui.utils import check_email_exists
@@ -9,12 +9,12 @@ from streamlit_login_auth_ui.utils import check_valid_password
 
 def test_unique_username_1(username='smith', users_auth_file='./tests/users.json'):
     """Returns False"""
-    assert not check_unique_usr(username, users_auth_file, None)
+    assert not check_unique_username(username, users_auth_file, None)
 
 
 def test_unique_username_2(username='peter', users_auth_file='./tests/users.json'):
     """Returns True"""
-    assert check_unique_usr(username, users_auth_file, None)
+    assert check_unique_username(username, users_auth_file, None)
 
 
 def test_check_usr_pass_1(username='smith', password='door_5954', users_auth_file='./tests/users.json'):

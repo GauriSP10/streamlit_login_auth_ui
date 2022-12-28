@@ -31,6 +31,10 @@ auth_token = 'courier_auth_token'  # Cannot reset password
 # There is free tier.
 auth_token = st.secrets['secrets_courier_auth_token']  # comment it if you don't use it
 
+# If True, only login widget is enabled. Users cannot register, etc. but can
+# login with username and password.
+is_only_login = False
+
 __login__obj = __login__(
     auth_token=auth_token,
     company_name="Shims",
@@ -42,7 +46,8 @@ __login__obj = __login__(
     lottie_url='https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json',
     users_auth_file=users_auth_file,
     is_disable_login=False,
-    detadb=db)
+    detadb=db,
+    is_only_login=is_only_login)
 
 is_logged_in = __login__obj.build_login_ui()
 

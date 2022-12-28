@@ -37,7 +37,8 @@ class __login__:
         lottie_url: str = "https://assets8.lottiefiles.com/packages/lf20_ktwnwv5m.json",
         users_auth_file='_secret_auth_.json',
         is_disable_login: bool = False,
-        detadb: Optional[DetaDbType] = None):
+        detadb: Optional[DetaDbType] = None,
+        is_only_login: bool = False):
         """
         Arguments:
         -----------
@@ -53,6 +54,7 @@ class __login__:
         10. users_auth_file : The json file where registered users info are saved.
         11. is_disable_login : Disables username and password widget and allow the user to login without those.
         12. detadb : Deta database 
+        13. is_only_login : Only login widget is usable, others are disabled.
         """
         self.auth_token = auth_token
         self.company_name = company_name
@@ -65,6 +67,7 @@ class __login__:
         self.users_auth_file = users_auth_file
         self.is_disable_login = is_disable_login
         self.detadb = detadb
+        self.is_only_login = is_only_login
 
         self.cookies = EncryptedCookieManager(
             prefix="streamlit_login_ui_yummy_cookies",
@@ -153,8 +156,17 @@ class __login__:
         username and password before deleting the user account from file.
         """
         with st.form("Delete Account Form", clear_on_submit=True):
-            username = st.text_input("Username", placeholder='Your unique username')
-            password = st.text_input("Password", placeholder='Your password', type='password')
+            username = st.text_input(
+                "Username",
+                placeholder='Your unique username',
+                disabled=self.is_only_login
+            )
+            password = st.text_input(
+                "Password",
+                placeholder='Your password',
+                type='password',
+                disabled=self.is_only_login
+            )
 
             st.markdown("###")
             delete_submit_button = st.form_submit_button(label='Delete Account')
@@ -201,15 +213,29 @@ class __login__:
         Creates the sign-up widget and stores the user info in a secure way in the users_auth_file.
         """
         with st.form("Sign Up Form"):
-            name_sign_up = st.text_input("Name *", placeholder='Please enter your name')
-            email_sign_up = st.text_input("Email *", placeholder='Please enter your email')            
+            name_sign_up = st.text_input(
+                "Name *",
+                placeholder='Please enter your name',
+                disabled=self.is_only_login
+            )
+            email_sign_up = st.text_input(
+                "Email *",
+                placeholder='Please enter your email',
+                disabled=self.is_only_login
+            )
             username_sign_up = st.text_input(
-                "Username *", placeholder='Enter a unique username',
-                help='Minimum character is 4, maximum is 16, no whitespace, case insensitive.')
+                "Username *",
+                placeholder='Enter a unique username',
+                help='Minimum character is 4, maximum is 16, no whitespace, case insensitive.',
+                disabled=self.is_only_login
+            )
             password_sign_up = st.text_input(
-                "Password *", placeholder='Create a strong password',
-                 type='password',
-                 help='Minimum character is 8, maximum is 64, and no whitespace.')
+                "Password *",
+                placeholder='Create a strong password',
+                type='password',
+                help='Minimum character is 8, maximum is 64, and no whitespace.',
+                disabled=self.is_only_login
+            )
             st.markdown("###")
             sign_up_submit_button = st.form_submit_button(label='Register')
 
@@ -258,7 +284,11 @@ class __login__:
         containing a random password.
         """
         with st.form("Forgot Password Form"):
-            email_forgot_passwd = st.text_input("Email", placeholder='Please enter your email')
+            email_forgot_passwd = st.text_input(
+                "Email",
+                placeholder='Please enter your email',
+                disabled=self.is_only_login
+            )
 
             st.markdown("###")
             forgot_passwd_submit_button = st.form_submit_button(label='Get Password')
@@ -291,10 +321,28 @@ class __login__:
         resets the password and updates the same in the users auth file.
         """
         with st.form("Reset Password Form"):
-            email_reset_passwd = st.text_input("Email", placeholder='Please enter your email')
-            current_passwd = st.text_input("Temporary Password", placeholder='Please enter the password you received in the email')
-            new_passwd = st.text_input("New Password", placeholder='Please enter a new, strong password', type='password')
-            new_passwd_1 = st.text_input("Re - Enter New Password", placeholder='Please re- enter the new password', type='password')
+            email_reset_passwd = st.text_input(
+                "Email",
+                placeholder='Please enter your email',
+                disabled=self.is_only_login
+            )
+            current_passwd = st.text_input(
+                "Temporary Password",
+                placeholder='Please enter the password you received in the email',
+                disabled=self.is_only_login
+            )
+            new_passwd = st.text_input(
+                "New Password",
+                placeholder='Please enter a new, strong password',
+                type='password',
+                disabled=self.is_only_login
+            )
+            new_passwd_1 = st.text_input(
+                "Re - Enter New Password",
+                placeholder='Please re- enter the new password',
+                type='password',
+                disabled=self.is_only_login
+            )
 
             st.markdown("###")
             reset_passwd_submit_button = st.form_submit_button(label='Reset Password')

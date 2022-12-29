@@ -34,8 +34,19 @@ def get_users_data(users_auth_file: str) -> list[dict]:
 def check_username_and_password(
         username: str, password: str, users_auth_file: str,
         detadb: Optional[DetaDbType]) -> bool:
-    """
-    Authenticates the username and password. The former is case insensitive.
+    """Authenticates the username and password.
+    
+    If detadb is used, check username and password from detadb. The username
+    is case insensitive.
+
+    Args:
+       username: The username of user.
+       password: The password of user.
+       users_auth_file: The json file where users info are saved.
+       detadb: The pointer to the deta base.
+
+    Returns:
+        True if username and password are valid otherwise False.
     """
     if detadb is not None:
         if len(username) and len(password):

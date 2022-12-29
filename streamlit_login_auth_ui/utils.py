@@ -116,7 +116,8 @@ def check_valid_email(email_sign_up: str) -> bool:
 def check_unique_email(email: str, users_auth_file: str, detadb: Optional[DetaDbType]) -> bool:
     """Checks if email is not in users auth file or deta base.
 
-    Lookup the email in the user auth file or in deta base.
+    Lookup the email in the user auth file or in deta base. The email is
+    case insensitive.
 
     Args:
         email: The email to check in users auth file or deta base.

@@ -35,6 +35,8 @@ auth_token = st.secrets['secrets_courier_auth_token']  # comment it if you don't
 # login with username and password.
 is_only_login = False
 
+# cookie_password = st.secrets['cookie_password']
+
 __login__obj = __login__(
     auth_token=auth_token,
     company_name="Shims",
@@ -47,7 +49,9 @@ __login__obj = __login__(
     users_auth_file=users_auth_file,
     is_disable_login=False,
     detadb=db,
-    is_only_login=is_only_login)
+    is_only_login=is_only_login,
+    # cookie_password=cookie_password
+)
 
 is_logged_in = __login__obj.build_login_ui()
 

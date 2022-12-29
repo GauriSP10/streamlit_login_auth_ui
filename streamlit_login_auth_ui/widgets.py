@@ -38,7 +38,8 @@ class __login__:
         users_auth_file='_secret_auth_.json',
         is_disable_login: bool = False,
         detadb: Optional[DetaDbType] = None,
-        is_only_login: bool = False):
+        is_only_login: bool = False,
+        cookie_password: str = '9d68d6f2-4258-45c9-96eb-2d6bc74ddbb5-d8f49cab-edbb-404a-94d0-b25b1d4a564b'):
         """
         Arguments:
         -----------
@@ -55,6 +56,7 @@ class __login__:
         11. is_disable_login : Disables username and password widget and allow the user to login without those.
         12. detadb : Deta database 
         13. is_only_login : Only login widget is usable, others are disabled.
+        14. cookie_password : Cookie password
         """
         self.auth_token = auth_token
         self.company_name = company_name
@@ -68,10 +70,11 @@ class __login__:
         self.is_disable_login = is_disable_login
         self.detadb = detadb
         self.is_only_login = is_only_login
+        self.cookie_password = cookie_password
 
         self.cookies = EncryptedCookieManager(
             prefix="streamlit_login_ui_yummy_cookies",
-            password='9d68d6f2-4258-45c9-96eb-2d6bc74ddbb5-d8f49cab-edbb-404a-94d0-b25b1d4a564b')
+            password=self.cookie_password)
 
         if not self.cookies.ready():
             st.stop()   

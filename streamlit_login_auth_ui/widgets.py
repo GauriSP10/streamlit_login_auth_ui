@@ -103,9 +103,7 @@ class __login__:
         return False
 
     def get_username(self) -> Optional[str]:
-        """Gets username of the user that logged in.
-        
-        Gets the username if user has logged in.
+        """Gets username of the user who logged in.
 
         Returns:
             username or None

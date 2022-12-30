@@ -292,9 +292,14 @@ class __login__:
 
 
     def forgot_password(self) -> None:
-        """
-        Creates the forgot password widget and after user authentication (email), triggers an email to the user 
-        containing a random password.
+        """Creates the forgot password widget.
+        
+        Asks the user's email for password reset. If courier auth token is
+        defined by the developer, and email will be sent to the user which
+        contains a random password to be used for resetting the password.
+
+        Returns:
+            None
         """
         with st.form("Forgot Password Form"):
             email_forgot_passwd = st.text_input(

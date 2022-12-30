@@ -298,8 +298,8 @@ def register_new_user(name_sign_up: str, email_sign_up: str,
             json.dump(authorized_users_data, auth_json_write)
 
 
-def check_email_exists(email: str, users_auth_file: str, detadb: Optional[DetaDbType]):
-    """Checks if email is present in the users auth file.
+def check_email_exists(email: str, users_auth_file: str, detadb: Optional[DetaDbType]) -> tuple[bool, Optional[str]]:
+    """Checks if email is present in the users auth file or in deta base.
 
     Read the users auth file and check if email is present. Email
     checking is case insensitive.

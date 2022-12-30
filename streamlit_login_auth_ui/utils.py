@@ -1,8 +1,9 @@
 from typing import Union, Optional
 import re
 import json
-from trycourier import Courier
 import secrets
+
+from trycourier import Courier
 from argon2 import PasswordHasher
 import requests
 from trycourier.exceptions import CourierAPIException

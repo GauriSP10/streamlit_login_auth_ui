@@ -39,7 +39,8 @@ class __login__:
         is_disable_login: bool = False,
         detadb: Optional[DetaDbType] = None,
         is_only_login: bool = False,
-        cookie_password: str = '9d68d6f2-4258-45c9-96eb-2d6bc74ddbb5-d8f49cab-edbb-404a-94d0-b25b1d4a564b'):
+        cookie_password: str = '9d68d6f2-4258-45c9-96eb-2d6bc74ddbb5-d8f49cab-edbb-404a-94d0-b25b1d4a564b',
+        cookie_prefix : str = 'streamlit_login_ui_yummy_cookies'):
         """
         Arguments:
         -----------
@@ -57,6 +58,7 @@ class __login__:
         12. detadb : Deta database 
         13. is_only_login : Only login widget is usable, others are disabled.
         14. cookie_password : Cookie password
+        15. cookie_prefix : Cookie prefix
         """
         self.auth_token = auth_token
         self.company_name = company_name
@@ -71,9 +73,10 @@ class __login__:
         self.detadb = detadb
         self.is_only_login = is_only_login
         self.cookie_password = cookie_password
+        self.cookie_password = cookie_prefix
 
         self.cookies = EncryptedCookieManager(
-            prefix="streamlit_login_ui_yummy_cookies",
+            prefix=cookie_prefix,
             password=self.cookie_password)
 
         if not self.cookies.ready():

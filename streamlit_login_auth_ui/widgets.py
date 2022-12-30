@@ -41,7 +41,7 @@ class __login__:
         detadb: Optional[DetaDbType] = None,
         is_only_login: bool = False,
         cookie_password: str = '9d68d6f2-4258-45c9-96eb-2d6bc74ddbb5-d8f49cab-edbb-404a-94d0-b25b1d4a564b',
-        cookie_prefix : str = 'streamlit_login_ui_yummy_cookies'):
+        cookie_prefix: str = 'streamlit_login_ui_yummy_cookies'):
         """
         Arguments:
         -----------
@@ -56,7 +56,7 @@ class __login__:
         9. lottie_url : The lottie animation you would like to use on the login page. Explore animations at - https://lottiefiles.com/featured
         10. users_auth_file : The json file where registered users info are saved.
         11. is_disable_login : Disables username and password widget and allow the user to login without those.
-        12. detadb : Deta database 
+        12. detadb : Deta database
         13. is_only_login : Only login widget is usable, others are disabled.
         14. cookie_password : Cookie password
         15. cookie_prefix : Cookie prefix
@@ -81,7 +81,7 @@ class __login__:
             password=self.cookie_password)
 
         if not self.cookies.ready():
-            st.stop()   
+            st.stop()
 
 
     def check_auth_json_file_exists(self) -> bool:
@@ -97,7 +97,7 @@ class __login__:
         for file_name in file_names:
             if self.users_auth_file in file_name:
                 present_files.append(file_name)
-                    
+
             present_files = sorted(present_files)
             if len(present_files) > 0:
                 return True
@@ -112,7 +112,7 @@ class __login__:
         if not st.session_state['LOGOUT_BUTTON_HIT']:
             fetched_cookies = self.cookies
             if '__streamlit_login_signup_ui_username__' in fetched_cookies.keys():
-                username=fetched_cookies['__streamlit_login_signup_ui_username__']
+                username = fetched_cookies['__streamlit_login_signup_ui_username__']
                 return username
         return None
  
@@ -146,7 +146,7 @@ class __login__:
                     disabled=self.is_disable_login)
 
                 st.markdown("###")
-                login_submit_button = st.form_submit_button(label = 'Login')
+                login_submit_button = st.form_submit_button(label='Login')
 
                 if login_submit_button:
                     authenticate_user_check = check_username_and_password(
@@ -208,7 +208,7 @@ class __login__:
                         with open(self.users_auth_file, "w") as auth_json_write:
                             json.dump(updated_users, auth_json_write)
                         is_user_deleted = True
-                    
+
                     if is_user_deleted:
                         st.success("Account is successfully deleted!")
 
@@ -372,7 +372,7 @@ class __login__:
 
                 elif new_passwd != new_passwd_1:
                     st.error("Passwords don't match!")
-            
+
                 if email_exists_check:
                     if current_passwd_check:
                         change_passwd(email_reset_passwd, new_passwd, self.users_auth_file, self.detadb)
@@ -409,7 +409,7 @@ class __login__:
                 options=['Login', 'Create Account', 'Forgot Password?', 'Reset Password', 'Delete Account'],
                 styles={
                     "container": {"padding": "5px"},
-                    "nav-link": {"font-size": "14px", "text-align": "left", "margin":"0px"}} )
+                    "nav-link": {"font-size": "14px", "text-align": "left", "margin": "0px"}})
         return main_page_sidebar, selected_option
 
 
@@ -420,7 +420,7 @@ class __login__:
         st.markdown(""" <style>
         #MainMenu {visibility: hidden;}
         </style> """, unsafe_allow_html=True)
-    
+
 
     def hide_footer(self) -> None:
         """
@@ -458,7 +458,7 @@ class __login__:
             with c2:
                 if not st.session_state['LOGGED_IN']:
                     self.animation()
-        
+
         if selected_option == 'Create Account':
             self.sign_up_widget()
 

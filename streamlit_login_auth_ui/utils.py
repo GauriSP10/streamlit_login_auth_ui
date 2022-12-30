@@ -422,8 +422,17 @@ def change_passwd(email: str, random_password: str, users_auth_file: str, detadb
 def check_email_and_password(email: str, password: str, users_auth_file: str, detadb: Optional[DetaDbType]) -> bool:
     """Checks the email and password.
 
-    Read the users auth file and check if email owns the password.
+    Read the users auth file or deta base and check if email owns the password.
     This is used when user resets the password.
+
+    Args:
+        email: The user email.
+        password: The password owned by email.
+        users_auth_file: The json file where users info are saved.
+        detadb: A pointer to handle deta base functionalities.
+
+    Returns:
+       True if email owns the password otherwise False.
     """
     email = email.lower()
 

@@ -36,7 +36,7 @@ def check_username_and_password(
         username: str, password: str, users_auth_file: str,
         detadb: Optional[DetaDbType]) -> bool:
     """Authenticates the username and password.
-    
+
     If detadb is used, check username and password from detadb. The username
     is case insensitive.
 
@@ -155,7 +155,7 @@ def check_valid_password(password: str) -> str:
 
     2. If length is below 8 it is invalid.
     password = "Kb584"
-    
+
     3. If length is above 64 it is invalid.
 
     Args:
@@ -271,9 +271,9 @@ def check_unique_username(username_sign_up: str, users_auth_file: str, detadb: O
 
 
 def register_new_user(name_sign_up: str, email_sign_up: str,
-                     username_sign_up: str, password_sign_up:
-                     str, users_auth_file: str,
-                     detadb: Optional[DetaDbType]) -> None:
+                      username_sign_up: str, password_sign_up:
+                      str, users_auth_file: str,
+                      detadb: Optional[DetaDbType]) -> None:
     """Saves new user info in the users_auth_file or in deta base.
 
     username and email are converted to lowercase before saving.
@@ -326,7 +326,7 @@ def check_email_exists(email: str, users_auth_file: str, detadb: Optional[DetaDb
 
     # Else check email from json file.
     else:
-        authorized_users_data = get_users_data(users_auth_file)    
+        authorized_users_data = get_users_data(users_auth_file)
         for user in authorized_users_data:
             if user['email'] == email:
                 return True, user['username']

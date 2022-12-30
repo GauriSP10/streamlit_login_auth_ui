@@ -1,7 +1,8 @@
 from typing import Optional
-import streamlit as st
 import json
 import os
+
+import streamlit as st
 from streamlit_lottie import st_lottie
 from streamlit_option_menu import option_menu
 from streamlit_cookies_manager import EncryptedCookieManager

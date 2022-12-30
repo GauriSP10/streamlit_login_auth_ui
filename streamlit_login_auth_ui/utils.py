@@ -233,7 +233,7 @@ def check_valid_username(name_sign_up: str) -> str:
     return 'valid'
 
 
-def check_unique_username(username_sign_up: str, users_auth_file: str, detadb: Optional[DetaDbType]):
+def check_unique_username(username_sign_up: str, users_auth_file: str, detadb: Optional[DetaDbType]) -> bool:
     """Checks if the username is in users auth file or deta base.
 
     If detadb is specified, we look into the cloud deta base. If not we will

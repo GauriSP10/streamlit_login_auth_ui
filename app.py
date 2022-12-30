@@ -36,6 +36,7 @@ auth_token = st.secrets['secrets_courier_auth_token']  # comment it if you don't
 is_only_login = False
 
 # cookie_password = st.secrets['cookie_password']
+# cookie_prefix = st.secrets['cookie_predix']
 
 __login__obj = __login__(
     auth_token=auth_token,
@@ -50,7 +51,8 @@ __login__obj = __login__(
     is_disable_login=False,
     detadb=db,
     is_only_login=is_only_login,
-    # cookie_password=cookie_password
+    # cookie_password=cookie_password,
+    # cookie_prefix=cookie_prefix
 )
 
 is_logged_in = __login__obj.build_login_ui()

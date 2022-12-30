@@ -322,7 +322,6 @@ def check_email_exists(email: str, users_auth_file: str, detadb: Optional[DetaDb
             users: list[dict] = res.items
             for user in users:
                 return True, user['username']
-        return False, None
 
     # Else check email from json file.
     else:
@@ -330,7 +329,7 @@ def check_email_exists(email: str, users_auth_file: str, detadb: Optional[DetaDb
         for user in authorized_users_data:
             if user['email'] == email:
                 return True, user['username']
-        return False, None
+    return False, None
 
 
 def generate_random_passwd() -> str:

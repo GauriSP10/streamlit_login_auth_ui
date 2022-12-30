@@ -102,12 +102,20 @@ class __login__:
                 return True
         return False
 
-    def get_username(self):
+    def get_username(self) -> Optional[str]:
+        """Gets username of the user that logged in.
+        
+        Gets the username if user has logged in.
+
+        Returns:
+            username or None
+        """
         if not st.session_state['LOGOUT_BUTTON_HIT']:
             fetched_cookies = self.cookies
             if '__streamlit_login_signup_ui_username__' in fetched_cookies.keys():
                 username=fetched_cookies['__streamlit_login_signup_ui_username__']
                 return username
+        return None
  
 
     def login_widget(self) -> None:

@@ -380,6 +380,15 @@ def send_passwd_in_email(
 def change_passwd(email: str, random_password: str, users_auth_file: str, detadb: Optional[DetaDbType]) -> None:
     """
     Replaces the old password with the newly generated password.
+
+    Args:
+        email: The user email connected to the password to be changed.
+        random_password: A password to save.
+        users_auth_file: The json file where users info are saved.
+        detadb: A pointer to handle deta base functionalities.
+
+    Returns:
+        None
     """
     email = email.lower()
 

@@ -307,6 +307,7 @@ def check_email_exists(email: str, users_auth_file: str, detadb: Optional[DetaDb
     Args:
         email: The email to check in users auth file.
         users_auth_file: The json file where users info are saved.
+        detadb: A pointer to handle deta base functionalities.
 
     Returns:
         A tuple of bool and str or None. If email is present return

@@ -1,9 +1,4 @@
 
-HOW TO INSTALL ALL LIBRARIES:
-python3.10 -m venv venv
-source venv/bin/activate
-python3.10 -m pip install -r requirement.txt
-
 # Streamlit Login/ Sign Up Library   [![Downloads](https://static.pepy.tech/personalized-badge/streamlit-login-auth-ui?period=month&units=international_system&left_color=grey&right_color=blue&left_text=downloads)](https://pepy.tech/project/streamlit-login-auth-ui)
 
 The streamlit_login_auth_ui library is meant for streamlit application developers.
@@ -28,9 +23,86 @@ https://pypi.org/project/streamlit-login-auth-ui/
  
 ## Installation
 
+### A. Install from pypi package
+
+This is not using virtual environment.
+
 ```python
 pip install streamlit-login-auth-ui
 ```
+
+### B. Install using virtual environments
+
+Open command prompt or terminal.
+
+**Linux**
+
+```
+python --version
+python -m venv venv
+source venv/bin/activate
+python -m pip install pip -U
+pip install streamlit-login-auth-ui
+```
+
+**Windows**
+
+```
+python --version
+python -m venv venv
+./venv/scripts/activate
+python -m pip install pip -U
+pip install streamlit-login-auth-ui
+```
+
+### C. Install using the files from repository
+
+You will get the latest commits that may not be found in pypi. Check the python version you have, `git clone` to copy all files from the indicated repository url. Change directory and create a virtual enviroment venv.
+
+**linux**
+
+```
+python --version
+git clone https://github.com/GauriSP10/streamlit_login_auth_ui.git
+cd streamlit_login_auth_ui
+python -m venv venv
+source venv/bin/activate
+python -m pip install pip -U
+pip install .
+
+streamlit run app.py
+```
+
+**windows**
+
+```
+python --version
+git clone https://github.com/GauriSP10/streamlit_login_auth_ui.git
+cd streamlit_login_auth_ui
+python -m venv venv
+./venv/scripts/activate
+python -m pip install pip -U
+pip install .
+
+streamlit run app.py
+```
+
+### D. How to install the packages from requirements.txt
+
+Install the packages from virtual environment.
+
+**linux**
+
+```
+python3.10 -m venv venv
+source venv/bin/activate
+python3.10 -m pip install pip -U
+python3.10 -m pip install -r requirements.txt
+```
+
+**windows**
+
+Windows is similar except in the activation of virtual enviroment.
 
 ## How to implement the library?
 
@@ -69,16 +141,15 @@ import streamlit as st
 from streamlit_login_auth_ui.widgets import __login__
 
 __login__obj = __login__(auth_token = "courier_auth_token", 
-                    company_name = "Shims",
-                    width = 200, height = 250, 
-                    logout_button_name = 'Logout', hide_menu_bool = False, 
-                    hide_footer_bool = False, 
-                    lottie_url = 'https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json')
+                         company_name = "Shims",
+                         width = 200, height = 250, 
+                         logout_button_name = 'Logout', hide_menu_bool = False, 
+                         hide_footer_bool = False, 
+                         lottie_url = 'https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json')
 
-LOGGED_IN = __login__obj.build_login_ui()
+is_logged_in = __login__obj.build_login_ui()
 
-if LOGGED_IN == True:
-
+if is_logged_in:
     st.markown("Your Streamlit Application Begins here!")
 ```
 
